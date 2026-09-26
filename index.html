@@ -334,6 +334,30 @@ dialog::backdrop{background:rgb(12 13 15/.55)}
   .brand i{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ── تقرير الطباعة / PDF ── */
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#fff!important;color:#000!important}
+  #app,#gate,#busy,#toast,#installBar,dialog,.topbar,.side,.scrim{display:none!important}
+  #printArea{display:block!important;font-family:'IBM Plex Sans Arabic',sans-serif;color:#000}
+  #printArea *{color:#000!important}
+  .prh{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+    border-bottom:2px solid #000;padding-bottom:9px;margin-bottom:14px}
+  .prh h1{font-size:17pt;margin:0 0 2px}
+  .prh .org{font-size:12pt;font-weight:700}
+  .prh .meta{font-size:9.5pt;line-height:1.7;text-align:end}
+  table.pr{width:100%;border-collapse:collapse;font-size:9.5pt}
+  table.pr th,table.pr td{border:1px solid #444;padding:5px 7px;text-align:start}
+  table.pr th{background:#eee!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-weight:700}
+  table.pr tfoot td{font-weight:700;background:#f4f4f4!important;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.pr tr{break-inside:avoid}
+  .prsig{display:flex;gap:40px;margin-top:34px;font-size:10pt}
+  .prsig div{flex:1;border-top:1px solid #000;padding-top:6px;text-align:center}
+  .prf{margin-top:12px;font-size:8.5pt;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -375,6 +399,7 @@ dialog::backdrop{background:rgb(12 13 15/.55)}
   <div class="df"><button class="btn pri" type="submit" id="dlgSave"></button>
     <button class="btn" type="button" data-close id="dlgCancel"></button></div>
 </form></dialog>
+<div id="printArea"></div>
 <div id="installBar" class="installbar" hidden>
   <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M8 11l4 4 4-4"/><path d="M4 19h16"/></svg></span>
   <span class="txt"><b id="instHead"></b><span id="instSub"></span></span>
@@ -394,7 +419,7 @@ const BUILT_IN = {
   key: 'sb_publishable__DH_rGvL6-b2xS9G2X-ujg_H2MoIOws'
 };
 
-const APP_VERSION='29';
+const APP_VERSION='31';
 const LOGO='data:image/png;base64,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';
 
 /* ───────── أدوات عامة ───────── */
@@ -462,10 +487,12 @@ const AR={
  expiredSince:'منتهية منذ', days:'يوم', expiresToday:'تنتهي اليوم', inDays:'بعد',
  dept:'القسم', position:'المنصب', role:'الصلاحية', phone:'الجوال', nationality:'الجنسية',
  iban:'الآيبان', missing:'ناقص', vehicle:'المركبة', driver:'السائق', noDriver:'غير مسندة',
- passportNo:'رقم الجواز', medNo:'رقم التأمين الطبي', medical:'التأمين الطبي',
+ passportNo:'رقم الجواز', medical:'التأمين الطبي',
  inspection:'الفحص الدوري', vehFiles:'ملفات السيارة', addVehFile:'إرفاق ملف',
  fileLabel:'وصف الملف', filePick:'الملف', noVehFiles:'لا توجد ملفات مرفقة',
  openFile:'فتح', fileAdded:'تم إرفاق الملف',
+ drvHistory:'سجل السائقين', nowDriving:'حتى الآن', noDrvHistory:'لا يوجد سجل سائقين بعد',
+ sinceW:'من', untilW:'إلى',
  odometer:'العداد', km:'كم', nextService:'الصيانة القادمة', monthCost:'مصروف الشهر',
  docsValid:'الوثائق سارية', loginOn:'مفعّل', loginOff:'غير مفعّل', loginAccess:'الدخول للنظام',
  you:'أنت', noPosition:'بدون منصب', allDepts:'كل الأقسام', searchEmp:'ابحث بالاسم أو الجوال',
@@ -570,6 +597,16 @@ const AR={
  impBtn:'استيراد من إكسل', impRun:'استيراد',
  adjust:'الإضافي والخصم', adjustSub:'وقت إضافي أو خصم — بالساعة أو باليوم',
  monthly:'إدخال الشهر', monthlySub:'يملؤه مدير القسم مرة واحدة في نهاية الشهر',
+ draftW:'مسودة', postedW:'مُرحَّل', postMonth:'ترحيل الشهر', reopenMonth:'فتح للتعديل',
+ postedOk:'تم ترحيل الشهر', reopenedOk:'أُعيد فتح الشهر للتعديل',
+ confirmPost:'بعد الترحيل لن تستطيع التعديل. هل تريد ترحيل الشهر؟',
+ confirmReopen:'إعادة فتح الشهر لمدير القسم؟',
+ lockedMsg:'هذا الشهر مُرحَّل ومقفل عليك. راجع الموارد البشرية لفتحه.',
+ draftMsg:'الشهر ما زال مسودة — احفظ ما شئت وعدّل، ثم رحّله حين تنتهي.',
+ pickDeptFirst:'اختر قسماً لترحيله', deptW:'القسم', allDeptsW:'كل الأقسام',
+ exportPdf:'تصدير PDF', noRowsExport:'لا توجد بيانات للتصدير',
+ preparedBy:'أعدّه', reviewedBy:'راجعه', approvedBy:'اعتمده',
+ periodStatus:'حالة الشهر', postedOn:'رُحِّل في',
  sheetHint:'اكتب الإضافي أو الخصم أمام كل موظف، ثم احفظ الشهر كله دفعة واحدة. اترك الخانة فارغة لمن ليس له شيء.',
  saveMonth:'حفظ الشهر', savedMonth:'تم حفظ الشهر',
  filledFor:'مُدخَل لـ', ofEmp:'من', noChanges:'لا يوجد تغيير للحفظ',
@@ -665,10 +702,12 @@ const EN={
  expiredSince:'expired', days:'days ago', expiresToday:'expires today', inDays:'in',
  dept:'Department', position:'Position', role:'Role', phone:'Phone', nationality:'Nationality',
  iban:'IBAN', missing:'missing', vehicle:'Vehicle', driver:'Driver', noDriver:'unassigned',
- passportNo:'Passport number', medNo:'Medical insurance number', medical:'Medical insurance',
+ passportNo:'Passport number', medical:'Medical insurance',
  inspection:'Periodic inspection', vehFiles:'Vehicle files', addVehFile:'Attach a file',
  fileLabel:'What is it', filePick:'File', noVehFiles:'No files attached',
  openFile:'Open', fileAdded:'File attached',
+ drvHistory:'Driver history', nowDriving:'present', noDrvHistory:'No driver history yet',
+ sinceW:'From', untilW:'to',
  odometer:'Odometer', km:'km', nextService:'Next service', monthCost:'This month',
  docsValid:'Documents valid', loginOn:'Enabled', loginOff:'Not enabled', loginAccess:'System access',
  you:'You', noPosition:'No position', allDepts:'All departments', searchEmp:'Search by name or phone',
@@ -773,6 +812,16 @@ const EN={
  impBtn:'Import from Excel', impRun:'Import',
  adjust:'Overtime & deductions', adjustSub:'Overtime or deducted time — in hours or days',
  monthly:'Monthly entry', monthlySub:'Filled in once by the department manager at month end',
+ draftW:'Draft', postedW:'Posted', postMonth:'Post the month', reopenMonth:'Reopen for editing',
+ postedOk:'The month has been posted', reopenedOk:'The month is open for editing again',
+ confirmPost:'After posting you will not be able to edit. Post this month?',
+ confirmReopen:'Reopen this month for the department manager?',
+ lockedMsg:'This month is posted and locked for you. Ask HR to reopen it.',
+ draftMsg:'Still a draft — save and edit freely, then post it when you are done.',
+ pickDeptFirst:'Choose a department to post', deptW:'Department', allDeptsW:'All departments',
+ exportPdf:'Export PDF', noRowsExport:'Nothing to export',
+ preparedBy:'Prepared by', reviewedBy:'Reviewed by', approvedBy:'Approved by',
+ periodStatus:'Month status', postedOn:'Posted on',
  sheetHint:'Enter overtime or deducted time next to each employee, then save the whole month at once. Leave a box empty for anyone with nothing to record.',
  saveMonth:'Save the month', savedMonth:'The month has been saved',
  filledFor:'Entered for', ofEmp:'of', noChanges:'Nothing has changed',
@@ -927,7 +976,7 @@ async function receiptLink(path){
 /* ───────── تحميل البيانات ───────── */
 const TABLES=['org_settings','departments','projects','positions','employees','vehicles',
  'leaves','daily_reports','custody','custody_expenses','fleet_log','payroll_approvals',
- 'time_adjustments','company_docs','vehicle_files','profiles'];
+ 'time_adjustments','company_docs','vehicle_files','adj_periods','vehicle_drivers','profiles'];
 
 async function load(){
  const out={};
@@ -940,7 +989,7 @@ async function load(){
     position:nameOf(out.positions,e.position_id),position_id:e.position_id||'',
     dept:nameOf(out.departments,e.department_id),dept_id:e.department_id||'',
     nat:e.nationality||'',phone:e.phone||'',pno:e.passport_no||'',
-    medno:e.medical_no||'',medical:e.medical_expiry||'',
+    medical:e.medical_expiry||'',
     iqama:e.iqama_expiry||'',passport:e.passport_expiry||''})),
   veh:out.vehicles.map(v=>({id:v.id,plate:v.plate,model:v.model,year:v.year||'',type:v.type||'',driver:v.driver_id||'',
     km:+v.km||0,istimara:v.istimara_expiry||'',insurance:v.insurance_expiry||'',
@@ -955,6 +1004,10 @@ async function load(){
   adj:(out.time_adjustments||[]).map(a=>({id:a.id,emp:a.employee_id,kind:a.kind,unit:a.unit,
     qty:+a.qty||0,date:a.date,note:a.note||'',by:a.created_by||''})),
   vfile:(out.vehicle_files||[]).map(f=>({id:f.id,veh:f.vehicle_id,name:f.name,path:f.path,date:f.created_at||''})),
+  vdrv:(out.vehicle_drivers||[]).map(d=>({id:d.id,veh:d.vehicle_id,emp:d.employee_id||'',
+    from:d.from_date||'',to:d.to_date||'',note:d.note||''})),
+  period:(out.adj_periods||[]).map(p=>({id:p.id,dept:p.department_id,month:p.month,
+    status:p.status,at:p.posted_at||''})),
   cdoc:(out.company_docs||[]).map(d=>({id:d.id,name:d.name,cat:d.category,issuer:d.issuer||'',
     no:d.number||'',issued:d.issue_date||'',expiry:d.expiry_date||'',cost:+d.cost||0,
     file:d.file_path||'',note:d.note||'',active:d.active!==false})),
@@ -969,7 +1022,7 @@ async function load(){
      position:nameOf(out.positions,e.position_id),position_id:e.position_id||'',
      dept:nameOf(out.departments,e.department_id),dept_id:e.department_id||'',
      nat:e.nationality||'',phone:e.phone||'',pno:e.passport_no||'',
-     medno:e.medical_no||'',medical:e.medical_expiry||'',
+     medical:e.medical_expiry||'',
      iqama:e.iqama_expiry||'',passport:e.passport_expiry||''})});
    S.emp.sort((a,b)=>a.name.localeCompare(b.name,'ar'));
   }catch(e){}
@@ -1153,7 +1206,6 @@ const MAP_EMP={
  nationality:['الجنسيه','nationality'],
  phone:['الجوال','الهاتف','رقمالجوال','الموبايل','phone','mobile','tel'],
  passport_no:['رقمالجواز','الجواز','رقمجوازالسفر','passportno','passportnumber'],
- medical_no:['رقمالتامينالطبي','التامينالطبي','رقمالبوليصه','medicalno','insuranceno'],
  medical_expiry:['انتهاءالتامينالطبي','تاريخانتهاءالتامينالطبي','صلاحيهالتامينالطبي','medicalexpiry'],
  iqama_expiry:['انتهاءالاقامه','تاريخانتهاءالاقامه','صلاحيهالاقامه','iqamaexpiry','residencyexpiry'],
  passport_expiry:['انتهاءالجواز','تاريخانتهاءالجواز','الجواز','جوازالسفر','passportexpiry','passport']};
@@ -1178,9 +1230,9 @@ function mapHeaders(headerRow,MAP){
  return idx}
 
 /* قوالب جاهزة للتنزيل */
-const TPL={ar:{emp:['الاسم','رقم الهوية','المنصب','القسم','الجنسية','الجوال','انتهاء الإقامة','رقم الجواز','انتهاء الجواز','رقم التأمين الطبي','انتهاء التأمين الطبي'],
+const TPL={ar:{emp:['الاسم','رقم الهوية','المنصب','القسم','الجنسية','الجوال','انتهاء الإقامة','رقم الجواز','انتهاء الجواز','انتهاء التأمين الطبي'],
   veh:['رقم اللوحة','الطراز','النوع','سنة الصنع','السائق','العداد','انتهاء الاستمارة','انتهاء التأمين','انتهاء الفحص','الحالة']},
- en:{emp:['Name','National ID','Position','Department','Nationality','Phone','Iqama expiry','Passport number','Passport expiry','Medical insurance number','Medical insurance expiry'],
+ en:{emp:['Name','National ID','Position','Department','Nationality','Phone','Iqama expiry','Passport number','Passport expiry','Medical insurance expiry'],
   veh:['Plate','Model','Type','Year','Driver','Odometer','Registration expiry','Insurance expiry','Inspection expiry','Status']}};
 const tpl=kind=>TPL[LANG==='en'?'en':'ar'][kind];
 function downloadCSV(name,head,sample){
@@ -1208,7 +1260,7 @@ function openImport(kind){
  $('#dlgSave').hidden=false;$('#dlgSave').textContent=t('impRun');$('#dlgSave').disabled=true;
  $('#impTpl').addEventListener('click',()=>downloadCSV(
   kind==='emp'?(LANG==='en'?'employees-template.csv':'قالب-الموظفين.csv'):(LANG==='en'?'vehicles-template.csv':'قالب-المركبات.csv'),head,
-  kind==='emp'?[['محمد أحمد','2508538499','فني','الصيانة','سعودي','0551234567','2027-01-15','A12345678','2028-06-30','MED-99120','2027-03-01']]
+  kind==='emp'?[['محمد أحمد','2508538499','فني','الصيانة','سعودي','0551234567','2027-01-15','A12345678','2028-06-30','2027-03-01']]
               :[['أ ب ج 4721','هيونداي إلنترا','سيدان','2022','محمد أحمد','87420','2027-03-10','2027-05-01','2027-02-18','نشطة']]));
  $('#impFile').addEventListener('change',async ev=>{
   const f=ev.target.files[0];if(!f)return;
@@ -1263,7 +1315,6 @@ async function doImport(){
     nationality:cell(r,'nationality')||null,
     phone:cell(r,'phone')||null,
     passport_no:cell(r,'passport_no')||null,
-    medical_no:cell(r,'medical_no')||null,
     medical_expiry:toDate(cell(r,'medical_expiry')),
     iqama_expiry:toDate(cell(r,'iqama_expiry')),
     passport_expiry:toDate(cell(r,'passport_expiry'))};
@@ -1677,7 +1728,6 @@ function empRows(){
     [t('iqama'),expTag(e.iqama)],
     [t('passportNo'),e.pno?`<span class="mono">${esc(e.pno)}</span>`:'<span class="muted">—</span>'],
     [t('passport'),expTag(e.passport)],
-    [t('medNo'),e.medno?`<span class="mono">${esc(e.medno)}</span>`:'<span class="muted">—</span>'],
     [t('medical'),expTag(e.medical)],
     [t('vehicle'),v?esc(v.plate):'<span class="muted">—</span>']]
    .concat(can('admin')?[[t('role'),e.position_id?esc(roleName(posRole(e.position_id))):'<span class="muted">—</span>'],
@@ -1705,6 +1755,8 @@ function vehiclesV(){
  <div class="grid g-auto">${S.veh.length?S.veh.map(v=>{
   const sp=S.log.filter(m=>m.veh===v.id&&inMonth(m.date)).reduce((a,m)=>a+(+m.cost||0),0);
   const vf=(S.vfile||[]).filter(f=>f.veh===v.id);
+  const vd=(S.vdrv||[]).filter(x=>x.veh===v.id)
+   .sort((a,b)=>String(b.from).localeCompare(String(a.from)));
   return`<article class="card ${worst([v.istimara,v.insurance,v.inspect])}">
    <div class="row"><span class="av ic">${ico('car')}</span>
     <div style="flex:1;min-width:0"><div class="ttl">${esc(v.model)}</div>
@@ -1716,6 +1768,13 @@ function vehiclesV(){
      [t('istimara'),expTag(v.istimara)],[t('insurance'),expTag(v.insurance)],
      [t('inspection'),expTag(v.inspect)]]
     .concat(can('finance')?[[t('monthCost'),sp?money(sp):'<span class="muted">—</span>']]:[]))}
+   <div class="vfiles">
+    <div class="vfh"><b>${t('drvHistory')}</b></div>
+    ${vd.length?`<ul class="xl">${vd.map(x=>`<li>
+      <div><b>${x.emp?esc(empName(x.emp)):`<span class="muted">${t('noDriver')}</span>`}</b></div>
+      <span class="muted" style="font-size:12px">${fmtD(x.from)} ← ${x.to?fmtD(x.to):t('nowDriving')}</span></li>`).join('')}</ul>`
+     :`<p class="muted" style="font-size:12.5px;margin:6px 0 0">${t('noDrvHistory')}</p>`}
+   </div>
    <div class="vfiles">
     <div class="vfh"><b>${t('vehFiles')}</b>
      ${can('manage')?`<button class="lnk" data-act="addVehFile" data-id="${v.id}">${t('addVehFile')}</button>`:''}</div>
@@ -1778,7 +1837,15 @@ function cdocsV(){
   :`<p class="empty">${t('noCdocs')}</p>`}</div>`}
 
 /* ---------- إدخال الشهر ---------- */
-const MS={month:MONTH};
+const MS={month:MONTH,dept:''};
+
+/* حالة شهر قسم معيّن */
+const periodOf=(dept,m)=>(S.period||[]).find(p=>p.dept===dept&&p.month===m)||null;
+const isPosted=(dept,m)=>{const p=periodOf(dept,m);return !!(p&&p.status==='مرحّل')};
+/* هل يستطيع المستخدم الحالي تعديل هذا القسم في هذا الشهر؟ */
+const canEditDept=(dept,m)=>can('finance')?true
+ :(me.role==='supervisor'&&!isPosted(dept,m));
+
 /* كل سجلات موظف واحد من نوع واحد في الشهر — تُجمع وتُستبدل بسجل واحد عند الحفظ */
 function cellOf(ex,eid,kind){
  const l=ex.filter(a=>a.emp===eid&&a.kind===kind);
@@ -1788,11 +1855,92 @@ function cellOf(ex,eid,kind){
         ids:l.map(a=>a.id),mixed:!same,note:(l.find(a=>a.note)||{}).note||'',
         now:adjTxt(sumAdj(l,l[0].kind))}}
 
+/* الموظفون المعروضون في الورقة حسب القسم المختار */
+function sheetEmp(){
+ const d=MS.dept;
+ return [...S.emp].filter(e=>!d||e.dept_id===d)
+  .sort((a,b)=>String(a.name).localeCompare(String(b.name),'ar'))}
+
+/* قسم المستخدم إن كان مدير قسم */
+const myDeptId=()=>{const m=S.emp.find(e=>e.id===me.employee_id);return m?m.dept_id:''};
+
+/* يقرأ خانات الورقة المعروضة ويكتب الفروق فقط — يعيد عدد التغييرات */
+async function applySheet(m){
+ const day=monthEnd(m);
+ const ex=(S.adj||[]).filter(a=>String(a.date||'').startsWith(m));
+ const val=k=>{const el=$('#'+k);return el?el.value:''};
+ const put=[],drop=[];
+ for(const e of sheetEmp()){
+  for(const[kind,sfx]of[['إضافي','ot'],['خصم','dd']]){
+   if(!$('#ms_'+e.id+'_'+sfx))continue;
+   const note=(val('ms_'+e.id+'_'+sfx+'n')||'').trim()||null;
+   const raw=val('ms_'+e.id+'_'+sfx).trim();
+   const q=raw===''?0:Math.round((+raw||0)*100)/100;
+   const u=val('ms_'+e.id+'_'+sfx+'u')||'ساعة';
+   const o=cellOf(ex,e.id,kind);
+   if(!(q>0)){if(o)drop.push(...o.ids);continue}
+   if(!o){put.push({employee_id:e.id,kind,unit:u,qty:q,date:day,note});continue}
+   if(o.mixed||o.qty!==q||o.unit!==u||(o.note||null)!==note){
+    drop.push(...o.ids);put.push({employee_id:e.id,kind,unit:u,qty:q,date:day,note})}}}
+ for(const rid of drop)await api.del('time_adjustments',rid);
+ if(put.length)await api.ins('time_adjustments',put);
+ return put.length+drop.length}
+
+/* تقرير الإضافي والخصم — يُبنى ثم يُسلَّم لمحرّك طباعة المتصفح،
+   فيحفظه المستخدم PDF أو يطبعه. بلا أي مكتبة خارجية. */
+function exportAdjPdf(){
+ const m=MS.month,dept=MS.dept;
+ const ex=(S.adj||[]).filter(a=>String(a.date||'').startsWith(m));
+ const emp=sheetEmp().filter(e=>ex.some(a=>a.emp===e.id));
+ if(!emp.length)return toast(t('noRowsExport'));
+ const dn=dept?((S.departments.find(x=>x.id===dept)||{}).name||''):t('allDeptsW');
+ const posted=dept?isPosted(dept,m):false;
+ const mn=(()=>{const[y,mo]=m.split('-').map(Number);
+  return new Intl.DateTimeFormat(LOC(),{month:'long',year:'numeric',numberingSystem:'latn'})
+   .format(new Date(y,mo-1,1))})();
+
+ let tOd=0,tOh=0,tDd=0,tDh=0;
+ const body=emp.map((e,i)=>{
+  const o=sumAdj(ex.filter(a=>a.emp===e.id),'إضافي');
+  const d=sumAdj(ex.filter(a=>a.emp===e.id),'خصم');
+  tOd+=o.d;tOh+=o.h;tDd+=d.d;tDh+=d.h;
+  const note=[...ex.filter(a=>a.emp===e.id&&a.note)].map(a=>a.note).join(' · ');
+  return`<tr><td>${i+1}</td><td>${esc(e.name)}</td><td>${esc(e.nid||'—')}</td>
+   <td>${esc(e.position||'—')}</td><td>${adjTxt(o)}</td><td>${adjTxt(d)}</td>
+   <td>${esc(note)||'—'}</td></tr>`}).join('');
+
+ $('#printArea').innerHTML=`
+  <div class="prh">
+   <div><div class="org">${esc(orgTitle())}</div>
+    <h1>${t('adjust')}</h1></div>
+   <div class="meta">
+    <div><b>${t('monthWord')}:</b> ${esc(mn)}</div>
+    <div><b>${t('deptW')}:</b> ${esc(dn)}</div>
+    <div><b>${t('periodStatus')}:</b> ${posted?t('postedW'):t('draftW')}</div>
+    <div><b>${t('date')}:</b> ${fmtD(TODAY)}</div></div>
+  </div>
+  <table class="pr">
+   <thead><tr><th style="width:26px">#</th><th>${t('employee')}</th><th>${t('nid')}</th>
+    <th>${t('position')}</th><th>${t('overtimeWord')}</th><th>${t('deductWord')}</th><th>${t('notes')}</th></tr></thead>
+   <tbody>${body}</tbody>
+   <tfoot><tr><td colspan="4">${t('adjTotals')} — ${num(emp.length)} ${t('employeeWord')}</td>
+    <td>${adjTxt({d:tOd,h:tOh})}</td><td>${adjTxt({d:tDd,h:tDh})}</td><td></td></tr></tfoot>
+  </table>
+  <div class="prsig"><div>${t('preparedBy')}</div><div>${t('reviewedBy')}</div><div>${t('approvedBy')}</div></div>
+  <div class="prf">${esc(orgTitle())} · ${t('version')} ${APP_VERSION}</div>`;
+ setTimeout(()=>window.print(),60)}
+
 function monthlyV(){
- const m=MS.month,ex=(S.adj||[]).filter(a=>String(a.date||'').startsWith(m));
- const emp=[...S.emp].sort((a,b)=>String(a.name).localeCompare(String(b.name),'ar'));
+ const m=MS.month;
+ if(me.role==='supervisor')MS.dept=myDeptId();
+ const dept=MS.dept;
+ const ex=(S.adj||[]).filter(a=>String(a.date||'').startsWith(m));
+ const emp=sheetEmp();
  const done=emp.filter(e=>ex.some(a=>a.emp===e.id)).length;
- const unitSel=(id,v)=>`<select id="${id}">
+ const posted=dept?isPosted(dept,m):false;
+ const editable=dept?canEditDept(dept,m):can('finance');
+ const per=dept?periodOf(dept,m):null;
+ const unitSel=(id,v)=>`<select id="${id}" ${editable?'':'disabled'}>
    <option value="ساعة" ${v==='ساعة'?'selected':''}>${ev('ساعة')}</option>
    <option value="يوم"  ${v==='يوم' ?'selected':''}>${ev('يوم')}</option></select>`;
 
@@ -1807,21 +1955,37 @@ function monthlyV(){
      <div class="cell"><span>${t(lab)}${c?` <em class="cnow">${t('currentIs')} ${c.now}</em>`:''}</span>
       <div class="pair">
        <input id="ms_${e.id}_${k}" type="number" min="0" step="any" inputmode="decimal"
-        placeholder="0" value="${c?esc(nq(c.qty)):''}">${unitSel('ms_'+e.id+'_'+k+'u',c?c.unit:'ساعة')}</div>
-      <input id="ms_${e.id}_${k}n" type="text" placeholder="${t('notes')}" value="${esc(c?c.note:'')}"></div>`).join('')}
+        placeholder="0" value="${c?esc(nq(c.qty)):''}" ${editable?'':'disabled'}>${unitSel('ms_'+e.id+'_'+k+'u',c?c.unit:'ساعة')}</div>
+      <input id="ms_${e.id}_${k}n" type="text" placeholder="${t('notes')}" value="${esc(c?c.note:'')}" ${editable?'':'disabled'}></div>`).join('')}
    </div></div>`}).join('');
+
+ const deptPick=can('finance')?`<span class="field" style="flex:0 1 210px"><select id="msd" aria-label="${t('deptW')}">
+   <option value="">${t('allDeptsW')}</option>
+   ${S.departments.map(x=>`<option value="${esc(x.id)}" ${dept===x.id?'selected':''}>${esc(x.name)}${isPosted(x.id,m)?' — '+t('postedW'):''}</option>`).join('')}</select></span>`:'';
+
+ const banner=dept
+  ?(posted?`<p class="note ${can('finance')?'':'bad'}">${esc(t(can('finance')?'postedW':'lockedMsg'))}${per&&per.at?' · '+t('postedOn')+' '+fmtD(String(per.at).slice(0,10)):''}</p>`
+          :`<p class="note">${t('draftMsg')}</p>`)
+  :`<p class="note">${t('sheetHint')}</p>`;
 
  return`<div class="pagehead"><div><h1>${t('monthly')}</h1>
    <p>${t('monthlySub')}</p></div>
   <div class="acts"><button class="btn" data-go="adjust">${t('adjust')}</button></div></div>
  <div class="bar">
-  <span class="field" style="flex:0 1 200px"><input id="msm" type="month" value="${esc(m)}" aria-label="${t('monthWord')}"></span>
+  <span class="field" style="flex:0 1 190px"><input id="msm" type="month" value="${esc(m)}" aria-label="${t('monthWord')}"></span>
+  ${deptPick}
+  <span class="field" style="flex:0 0 auto;background:none;border:0;padding:0">
+   ${dept?`<span class="tag ${posted?'ok':'warn'}">${posted?t('postedW'):t('draftW')}</span>`:''}</span>
  </div>
- ${done?`<p class="note">${t('sheetLocked')}</p>`:`<p class="note">${t('sheetHint')}</p>`}
+ ${banner}
  ${emp.length?`<div class="sheet">${rows}</div>
   <div class="sbar"><b>${t('filledFor')} ${num(done)} ${t('ofEmp')} ${num(emp.length)}</b>
    <span class="grow"></span>
-   <button class="btn gold" data-act="saveSheet">${t('saveMonth')}</button></div>`
+   <button class="btn" data-act="exportAdj">${t('exportPdf')}</button>
+   ${editable?`<button class="btn" data-act="saveSheet">${t('saveMonth')}</button>`:''}
+   ${dept&&!posted&&editable?`<button class="btn gold" data-act="postMonth">${t('postMonth')}</button>`:''}
+   ${dept&&posted&&can('finance')?`<button class="btn gold" data-act="reopenMonth">${t('reopenMonth')}</button>`:''}
+  </div>`
   :`<p class="empty">${t('noEmployees')}</p>`}`}
 
 /* ---------- الإضافي والخصم ---------- */
@@ -2058,7 +2222,7 @@ const empFields=()=>[{k:'name',l:t('fullName'),req:1},{k:'national_id',l:t('nid'
  {k:'nationality',l:t('nationality')},{k:'phone',l:t('phone'),t:'tel'},
  {k:'iqama_expiry',l:t('iqama'),t:'date'},
  {k:'passport_no',l:t('passportNo')},{k:'passport_expiry',l:t('passport'),t:'date'},
- {k:'medical_no',l:t('medNo')},{k:'medical_expiry',l:t('medical'),t:'date'}];
+ {k:'medical_expiry',l:t('medical'),t:'date'}];
 const vehFields=()=>[{k:'model',l:t('model'),req:1},{k:'plate',l:t('plate'),req:1},
  {k:'type',l:t('type'),opt:VTYPES.map(v=>[v,ev(v)])},{k:'year',l:t('year'),t:'number'},
  {k:'driver_id',l:t('assignedDriver'),opt:[['',t('noDriver')],...optEmp()]},
@@ -2101,6 +2265,7 @@ $('#view').addEventListener('input',e=>{
  if(e.target.id==='q'||e.target.id==='dept'){
   F.q=$('#q').value;F.dept=$('#dept').value;$('#rows').innerHTML=empRows();return}
  if(e.target.id==='msm'){MS.month=e.target.value||MONTH;render();return}
+ if(e.target.id==='msd'){MS.dept=e.target.value;render();return}
  if(e.target.id==='cdq'||e.target.id==='cdc'){
   CD.q=$('#cdq').value;CD.cat=$('#cdc').value;render();
   const el=$('#'+e.target.id);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}}
@@ -2141,15 +2306,15 @@ document.addEventListener('click',async e=>{
   addEmp:()=>openForm(t('addEmp'),empFields(),{},async o=>{
    await api.ins('employees',{name:o.name,national_id:nul((o.national_id||'').trim()),position_id:nul(o.position_id),
     department_id:nul(o.department_id),nationality:o.nationality||null,phone:o.phone||null,
-    passport_no:o.passport_no||null,medical_no:o.medical_no||null,medical_expiry:nul(o.medical_expiry),
+    passport_no:o.passport_no||null,medical_expiry:nul(o.medical_expiry),
     iqama_expiry:nul(o.iqama_expiry),passport_expiry:nul(o.passport_expiry)});toast(t('addedOk'))}),
   editEmp:()=>{const x=S.emp.find(e2=>e2.id===id);
    openForm(t('edit'),empFields(),{name:x.name,national_id:x.nid,position_id:x.position_id,department_id:x.dept_id,
-    nationality:x.nat,phone:x.phone,passport_no:x.pno,medical_no:x.medno,medical_expiry:x.medical,
+    nationality:x.nat,phone:x.phone,passport_no:x.pno,medical_expiry:x.medical,
     iqama_expiry:x.iqama,passport_expiry:x.passport},async o=>{
     await api.upd('employees',id,{name:o.name,national_id:nul((o.national_id||'').trim()),position_id:nul(o.position_id),
      department_id:nul(o.department_id),nationality:o.nationality||null,phone:o.phone||null,
-     passport_no:o.passport_no||null,medical_no:o.medical_no||null,medical_expiry:nul(o.medical_expiry),
+     passport_no:o.passport_no||null,medical_expiry:nul(o.medical_expiry),
      iqama_expiry:nul(o.iqama_expiry),passport_expiry:nul(o.passport_expiry)});toast(t('savedOk'))})},
   delEmp:async()=>{const x=S.emp.find(e2=>e2.id===id);
    if(!ask(t('del')+' — '+x.name+'?'))return;
@@ -2284,6 +2449,30 @@ document.addEventListener('click',async e=>{
 
   noop:()=>{},
   goMonthly:()=>go('monthly'),
+  exportAdj:()=>exportAdjPdf(),
+  postMonth:async()=>{
+   const m=MS.month,d=MS.dept;
+   if(!d)return toast(t('pickDeptFirst'));
+   if(!canEditDept(d,m))return toast(t('lockedMsg'));
+   if(!ask(t('confirmPost')))return;
+   busy(true);
+   try{
+    await applySheet(m);
+    const p=periodOf(d,m);
+    const patch={status:'مرحّل',posted_by:me.id,posted_at:new Date().toISOString()};
+    if(p)await api.upd('adj_periods',p.id,patch);
+    else await api.ins('adj_periods',Object.assign({department_id:d,month:m},patch));
+    await refreshAll();toast(t('postedOk'))}
+   catch(ex){toast(ex.message)}finally{busy(false)}},
+  reopenMonth:async()=>{
+   if(!can('finance'))return toast(t('noPermission'));
+   const m=MS.month,d=MS.dept,p=periodOf(d,m);
+   if(!p)return;
+   if(!ask(t('confirmReopen')))return;
+   busy(true);
+   try{await api.upd('adj_periods',p.id,{status:'مسودة',posted_at:null});
+    await refreshAll();toast(t('reopenedOk'))}
+   catch(ex){toast(ex.message)}finally{busy(false)}},
   addCdoc:()=>{if(!can('finance'))return toast(t('noPermission'));
    openForm(t('addCdoc'),cdocFields(),{category:'اشتراك'},async o=>{
     if(!o.name.trim()){toast(t('saveFailed'));return false}
@@ -2307,26 +2496,11 @@ document.addEventListener('click',async e=>{
    try{await api.del('company_docs',id);await refreshAll();toast(t('deletedOk'))}catch(ex){toast(ex.message)}},
   saveSheet:async()=>{
    if(!can('team'))return toast(t('noPermission'));
-   const m=MS.month,day=monthEnd(m);
-   const ex=(S.adj||[]).filter(a=>String(a.date||'').startsWith(m));
-   const val=k=>{const el=$('#'+k);return el?el.value:''};
-   const put=[],drop=[];
-   for(const e of S.emp){
-    for(const[kind,sfx]of[['إضافي','ot'],['خصم','dd']]){
-     const note=(val('ms_'+e.id+'_'+sfx+'n')||'').trim()||null;
-     const raw=val('ms_'+e.id+'_'+sfx).trim();
-     const q=raw===''?0:Math.round((+raw||0)*100)/100;
-     const u=val('ms_'+e.id+'_'+sfx+'u')||'ساعة';
-     const o=cellOf(ex,e.id,kind);
-     if(!(q>0)){if(o)drop.push(...o.ids);continue}
-     if(!o){put.push({employee_id:e.id,kind,unit:u,qty:q,date:day,note});continue}
-     if(o.mixed||o.qty!==q||o.unit!==u||(o.note||null)!==note){
-      drop.push(...o.ids);put.push({employee_id:e.id,kind,unit:u,qty:q,date:day,note})}}}
-   if(!put.length&&!drop.length)return toast(t('noChanges'));
+   const m=MS.month;
+   if(MS.dept&&!canEditDept(MS.dept,m))return toast(t('lockedMsg'));
    busy(true);
-   try{
-    for(const rid of drop)await api.del('time_adjustments',rid);
-    if(put.length)await api.ins('time_adjustments',put);
+   try{const n=await applySheet(m);
+    if(!n){toast(t('noChanges'));return}
     await refreshAll();toast(t('savedMonth'))}
    catch(ex2){toast(ex2.message)}finally{busy(false)}},
   addAdj:()=>{if(!can('team'))return toast(t('noPermission'));
