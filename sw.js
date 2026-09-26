@@ -1,6 +1,6 @@
 /* عامل الخدمة: يخزّن واجهة البرنامج ليفتح بسرعة وبدون إنترنت.
    لا يخزّن أي بيانات — البيانات تأتي دائماً من قاعدة البيانات مباشرة. */
-const CACHE = 'hr-shell-v27';
+const CACHE = 'hr-shell-v29';
 const SHELL = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {

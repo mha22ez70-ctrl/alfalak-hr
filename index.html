@@ -302,6 +302,9 @@ dialog::backdrop{background:rgb(12 13 15/.55)}
 .instl:hover{background:rgb(201 160 75/.18)}
 .steps{margin:0;padding-inline-start:20px;font-size:14px;line-height:1.85}
 .steps li{margin-bottom:5px}
+.vfiles{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.vfh{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}
+.vfiles .xl{margin-top:7px}
 .sheet{display:grid;gap:11px}
 .srow{padding:14px 16px;border:1px solid var(--line);border-radius:15px;background:var(--card)}
 .srow .shd{display:flex;align-items:center;gap:11px;margin-bottom:11px}
@@ -391,7 +394,7 @@ const BUILT_IN = {
   key: 'sb_publishable__DH_rGvL6-b2xS9G2X-ujg_H2MoIOws'
 };
 
-const APP_VERSION='27';
+const APP_VERSION='29';
 const LOGO='data:image/png;base64,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';
 
 /* ───────── أدوات عامة ───────── */
@@ -459,6 +462,10 @@ const AR={
  expiredSince:'منتهية منذ', days:'يوم', expiresToday:'تنتهي اليوم', inDays:'بعد',
  dept:'القسم', position:'المنصب', role:'الصلاحية', phone:'الجوال', nationality:'الجنسية',
  iban:'الآيبان', missing:'ناقص', vehicle:'المركبة', driver:'السائق', noDriver:'غير مسندة',
+ passportNo:'رقم الجواز', medNo:'رقم التأمين الطبي', medical:'التأمين الطبي',
+ inspection:'الفحص الدوري', vehFiles:'ملفات السيارة', addVehFile:'إرفاق ملف',
+ fileLabel:'وصف الملف', filePick:'الملف', noVehFiles:'لا توجد ملفات مرفقة',
+ openFile:'فتح', fileAdded:'تم إرفاق الملف',
  odometer:'العداد', km:'كم', nextService:'الصيانة القادمة', monthCost:'مصروف الشهر',
  docsValid:'الوثائق سارية', loginOn:'مفعّل', loginOff:'غير مفعّل', loginAccess:'الدخول للنظام',
  you:'أنت', noPosition:'بدون منصب', allDepts:'كل الأقسام', searchEmp:'ابحث بالاسم أو الجوال',
@@ -570,6 +577,14 @@ const AR={
  openSheet:'فتح إدخال الشهر', singleEntry:'تسجيل فردي',
  overtimeWord:'إضافي', deductWord:'خصم',
  instHead:'ثبّت التطبيق على جهازك', instSub:'يفتح كأي تطبيق، بلا متصفح',
+ cdocs:'وثائق الشركة', cdocsSub:'الاشتراكات والرخص والشهادات وتواريخ انتهائها',
+ addCdoc:'إضافة وثيقة', editCdoc:'تعديل الوثيقة', docName:'اسم الوثيقة',
+ docCat:'النوع', docIssuer:'الجهة المُصدِرة', docNo:'رقم الوثيقة / الاشتراك',
+ issuedOnD:'تاريخ الإصدار', expiresOnD:'تاريخ الانتهاء', docFee:'الرسوم السنوية',
+ docCopy:'صورة الوثيقة', openCopy:'فتح الصورة', noCopy:'لا توجد صورة',
+ noCdocs:'لا توجد وثائق مسجّلة بعد.', allCats:'كل الأنواع', searchDoc:'ابحث باسم الوثيقة أو رقمها',
+ docsExpired:'منتهية', docsSoon60:'تنتهي خلال ٦٠ يوماً', docsOk:'سارية',
+ noExpiry:'بلا تاريخ انتهاء', feesYear:'إجمالي الرسوم السنوية', companyWord:'الشركة',
  instGo:'تثبيت', instBtn:'تثبيت التطبيق على هذا الجهاز',
  instOk:'تم تثبيت التطبيق — ستجد الأيقونة على شاشتك',
  instHow:'كيف تثبّت التطبيق', instAlready:'التطبيق مثبَّت على هذا الجهاز بالفعل.',
@@ -650,6 +665,10 @@ const EN={
  expiredSince:'expired', days:'days ago', expiresToday:'expires today', inDays:'in',
  dept:'Department', position:'Position', role:'Role', phone:'Phone', nationality:'Nationality',
  iban:'IBAN', missing:'missing', vehicle:'Vehicle', driver:'Driver', noDriver:'unassigned',
+ passportNo:'Passport number', medNo:'Medical insurance number', medical:'Medical insurance',
+ inspection:'Periodic inspection', vehFiles:'Vehicle files', addVehFile:'Attach a file',
+ fileLabel:'What is it', filePick:'File', noVehFiles:'No files attached',
+ openFile:'Open', fileAdded:'File attached',
  odometer:'Odometer', km:'km', nextService:'Next service', monthCost:'This month',
  docsValid:'Documents valid', loginOn:'Enabled', loginOff:'Not enabled', loginAccess:'System access',
  you:'You', noPosition:'No position', allDepts:'All departments', searchEmp:'Search by name or phone',
@@ -761,6 +780,14 @@ const EN={
  openSheet:'Open monthly entry', singleEntry:'Single entry',
  overtimeWord:'Overtime', deductWord:'Deduction',
  instHead:'Install the app on your device', instSub:'Opens like any app, without a browser',
+ cdocs:'Company documents', cdocsSub:'Subscriptions, licences and certificates with their expiry dates',
+ addCdoc:'Add a document', editCdoc:'Edit the document', docName:'Document name',
+ docCat:'Type', docIssuer:'Issued by', docNo:'Document / subscription number',
+ issuedOnD:'Issue date', expiresOnD:'Expiry date', docFee:'Annual fee',
+ docCopy:'Scan of the document', openCopy:'Open the scan', noCopy:'No scan attached',
+ noCdocs:'No documents recorded yet.', allCats:'All types', searchDoc:'Search by name or number',
+ docsExpired:'Expired', docsSoon60:'Expiring within 60 days', docsOk:'Valid',
+ noExpiry:'No expiry date', feesYear:'Total annual fees', companyWord:'Company',
  instGo:'Install', instBtn:'Install the app on this device',
  instOk:'Installed — you will find the icon on your screen',
  instHow:'How to install the app', instAlready:'The app is already installed on this device.',
@@ -803,7 +830,8 @@ const EV_EN={'معلقة':'Pending','معتمدة':'Approved','مرفوضة':'Re
  'نقل':'Transport','ضيافة':'Hospitality','أخرى':'Other','صيانة':'Maintenance','مخالفة':'Violation',
  'نشطة':'Active','في الصيانة':'In maintenance','متوقفة':'Idle',
  'بيك أب':'Pickup','فان':'Van','شاحنة':'Truck','سيدان':'Sedan',
- 'إضافي':'Overtime','خصم':'Deduction','ساعة':'Hour','يوم':'Day'};
+ 'إضافي':'Overtime','خصم':'Deduction','ساعة':'Hour','يوم':'Day',
+ 'اشتراك':'Subscription','رخصة':'Licence','شهادة':'Certificate','سجل':'Registry','عقد':'Contract','أخرى':'Other'};
 const ev=v=>LANG==='en'?(EV_EN[v]||v):v;
 
 const LOC=()=>LANG==='en'?'en-GB':'ar';
@@ -899,7 +927,7 @@ async function receiptLink(path){
 /* ───────── تحميل البيانات ───────── */
 const TABLES=['org_settings','departments','projects','positions','employees','vehicles',
  'leaves','daily_reports','custody','custody_expenses','fleet_log','payroll_approvals',
- 'time_adjustments','profiles'];
+ 'time_adjustments','company_docs','vehicle_files','profiles'];
 
 async function load(){
  const out={};
@@ -911,10 +939,12 @@ async function load(){
   emp:out.employees.map(e=>({id:e.id,name:e.name,title:e.title||'',nid:e.national_id||'',
     position:nameOf(out.positions,e.position_id),position_id:e.position_id||'',
     dept:nameOf(out.departments,e.department_id),dept_id:e.department_id||'',
-    nat:e.nationality||'',phone:e.phone||'',iban:e.iban||'',
+    nat:e.nationality||'',phone:e.phone||'',pno:e.passport_no||'',
+    medno:e.medical_no||'',medical:e.medical_expiry||'',
     iqama:e.iqama_expiry||'',passport:e.passport_expiry||''})),
   veh:out.vehicles.map(v=>({id:v.id,plate:v.plate,model:v.model,year:v.year||'',type:v.type||'',driver:v.driver_id||'',
-    km:+v.km||0,istimara:v.istimara_expiry||'',insurance:v.insurance_expiry||'',status:v.status||'نشطة'})),
+    km:+v.km||0,istimara:v.istimara_expiry||'',insurance:v.insurance_expiry||'',
+    inspect:v.inspection_expiry||'',status:v.status||'نشطة'})),
   leave:out.leaves.map(l=>({id:l.id,emp:l.employee_id,type:l.type,from:l.from_date,to:l.to_date,status:l.status,note:l.note||''})),
   rep:out.daily_reports.map(r=>({id:r.id,date:r.date,project:nameOf(out.projects,r.project_id),project_id:r.project_id||'',
     emp:r.employee_id,hours:+r.hours||0,task:r.task||''})),
@@ -924,6 +954,10 @@ async function load(){
   log:out.fleet_log.map(m=>({id:m.id,veh:m.vehicle_id,kind:m.kind,date:m.date,cost:+m.cost||0,note:m.note||'',src:m.source_expense_id||''})),
   adj:(out.time_adjustments||[]).map(a=>({id:a.id,emp:a.employee_id,kind:a.kind,unit:a.unit,
     qty:+a.qty||0,date:a.date,note:a.note||'',by:a.created_by||''})),
+  vfile:(out.vehicle_files||[]).map(f=>({id:f.id,veh:f.vehicle_id,name:f.name,path:f.path,date:f.created_at||''})),
+  cdoc:(out.company_docs||[]).map(d=>({id:d.id,name:d.name,cat:d.category,issuer:d.issuer||'',
+    no:d.number||'',issued:d.issue_date||'',expiry:d.expiry_date||'',cost:+d.cost||0,
+    file:d.file_path||'',note:d.note||'',active:d.active!==false})),
   payApproved:out.payroll_approvals.map(p=>p.month)};
 
  if(me&&me.role==='supervisor'){
@@ -934,7 +968,8 @@ async function load(){
     S.emp.push({id:e.id,name:e.name,title:'',nid:e.national_id||'',
      position:nameOf(out.positions,e.position_id),position_id:e.position_id||'',
      dept:nameOf(out.departments,e.department_id),dept_id:e.department_id||'',
-     nat:e.nationality||'',phone:e.phone||'',iban:'',
+     nat:e.nationality||'',phone:e.phone||'',pno:e.passport_no||'',
+     medno:e.medical_no||'',medical:e.medical_expiry||'',
      iqama:e.iqama_expiry||'',passport:e.passport_expiry||''})});
    S.emp.sort((a,b)=>a.name.localeCompare(b.name,'ar'));
   }catch(e){}
@@ -983,10 +1018,14 @@ const csv=rows=>rows.map(r=>r.map(c=>{const v=String(c??'');return /[",\n]/.test
 
 function docsDue(){const r=[];
  S.emp.forEach(e=>{if(e.iqama)r.push({who:e.name,what:t('iqama'),date:e.iqama,go:'employees'});
-  if(e.passport)r.push({who:e.name,what:t('passport'),date:e.passport,go:'employees'})});
+  if(e.passport)r.push({who:e.name,what:t('passport'),date:e.passport,go:'employees'});
+  if(e.medical)r.push({who:e.name,what:t('medical'),date:e.medical,go:'employees'})});
  S.veh.forEach(v=>{const w=v.model+' ('+v.plate+')';
   if(v.istimara)r.push({who:w,what:t('istimara'),date:v.istimara,go:'vehicles'});
-  if(v.insurance)r.push({who:w,what:t('insurance'),date:v.insurance,go:'vehicles'})});
+  if(v.insurance)r.push({who:w,what:t('insurance'),date:v.insurance,go:'vehicles'});
+  if(v.inspect)r.push({who:w,what:t('inspection'),date:v.inspect,go:'vehicles'})});
+ if(can('team'))(S.cdoc||[]).forEach(d=>{
+  if(d.active&&d.expiry)r.push({who:d.issuer||orgTitle(),what:d.name,date:d.expiry,go:'cdocs'})});
  return r.map(x=>({...x,d:daysTo(x.date)})).filter(x=>x.d<=60).sort((a,b)=>a.d-b.d)}
 
 function ledger(){const L=[];
@@ -1113,7 +1152,9 @@ const MAP_EMP={
  department:['القسم','الاداره','department','dept','division'],
  nationality:['الجنسيه','nationality'],
  phone:['الجوال','الهاتف','رقمالجوال','الموبايل','phone','mobile','tel'],
- iban:['الايبان','ايبان','رقمالايبان','iban'],
+ passport_no:['رقمالجواز','الجواز','رقمجوازالسفر','passportno','passportnumber'],
+ medical_no:['رقمالتامينالطبي','التامينالطبي','رقمالبوليصه','medicalno','insuranceno'],
+ medical_expiry:['انتهاءالتامينالطبي','تاريخانتهاءالتامينالطبي','صلاحيهالتامينالطبي','medicalexpiry'],
  iqama_expiry:['انتهاءالاقامه','تاريخانتهاءالاقامه','صلاحيهالاقامه','iqamaexpiry','residencyexpiry'],
  passport_expiry:['انتهاءالجواز','تاريخانتهاءالجواز','الجواز','جوازالسفر','passportexpiry','passport']};
 
@@ -1125,6 +1166,7 @@ const MAP_VEH={
  driver:['السائق','اسمالسائق','driver','drivername'],
  km:['العداد','قراءهالعداد','الكيلومترات','km','odometer','mileage'],
  istimara_expiry:['انتهاءالاستماره','تاريخانتهاءالاستماره','الاستماره','istimara','registrationexpiry','registration'],
+ inspection_expiry:['انتهاءالفحص','تاريخانتهاءالفحص','الفحص','الفحصالدوري','inspection','inspectionexpiry'],
  insurance_expiry:['انتهاءالتامين','تاريخانتهاءالتامين','التامين','insuranceexpiry','insurance'],
  status:['الحاله','حالهالمركبه','status']};
 
@@ -1136,10 +1178,10 @@ function mapHeaders(headerRow,MAP){
  return idx}
 
 /* قوالب جاهزة للتنزيل */
-const TPL={ar:{emp:['الاسم','رقم الهوية','المنصب','القسم','الجنسية','الجوال','الآيبان','انتهاء الإقامة','انتهاء الجواز'],
-  veh:['رقم اللوحة','الطراز','النوع','سنة الصنع','السائق','العداد','انتهاء الاستمارة','انتهاء التأمين','الحالة']},
- en:{emp:['Name','National ID','Position','Department','Nationality','Phone','IBAN','Iqama expiry','Passport expiry'],
-  veh:['Plate','Model','Type','Year','Driver','Odometer','Registration expiry','Insurance expiry','Status']}};
+const TPL={ar:{emp:['الاسم','رقم الهوية','المنصب','القسم','الجنسية','الجوال','انتهاء الإقامة','رقم الجواز','انتهاء الجواز','رقم التأمين الطبي','انتهاء التأمين الطبي'],
+  veh:['رقم اللوحة','الطراز','النوع','سنة الصنع','السائق','العداد','انتهاء الاستمارة','انتهاء التأمين','انتهاء الفحص','الحالة']},
+ en:{emp:['Name','National ID','Position','Department','Nationality','Phone','Iqama expiry','Passport number','Passport expiry','Medical insurance number','Medical insurance expiry'],
+  veh:['Plate','Model','Type','Year','Driver','Odometer','Registration expiry','Insurance expiry','Inspection expiry','Status']}};
 const tpl=kind=>TPL[LANG==='en'?'en':'ar'][kind];
 function downloadCSV(name,head,sample){
  const body=[head,...(sample||[])].map(r=>r.map(c=>/[",\n;]/.test(String(c))?'"'+String(c).replace(/"/g,'""')+'"':c).join(',')).join('\r\n');
@@ -1166,8 +1208,8 @@ function openImport(kind){
  $('#dlgSave').hidden=false;$('#dlgSave').textContent=t('impRun');$('#dlgSave').disabled=true;
  $('#impTpl').addEventListener('click',()=>downloadCSV(
   kind==='emp'?(LANG==='en'?'employees-template.csv':'قالب-الموظفين.csv'):(LANG==='en'?'vehicles-template.csv':'قالب-المركبات.csv'),head,
-  kind==='emp'?[['محمد أحمد','2508538499','فني','الصيانة','سعودي','0551234567','SA0000000000000000000000','2027-01-15','2028-06-30']]
-              :[['أ ب ج 4721','هيونداي إلنترا','سيدان','2022','محمد أحمد','87420','2027-03-10','2027-05-01','نشطة']]));
+  kind==='emp'?[['محمد أحمد','2508538499','فني','الصيانة','سعودي','0551234567','2027-01-15','A12345678','2028-06-30','MED-99120','2027-03-01']]
+              :[['أ ب ج 4721','هيونداي إلنترا','سيدان','2022','محمد أحمد','87420','2027-03-10','2027-05-01','2027-02-18','نشطة']]));
  $('#impFile').addEventListener('change',async ev=>{
   const f=ev.target.files[0];if(!f)return;
   const out=$('#impOut');out.innerHTML=`<p class="note">${t('impReading')}</p>`;
@@ -1220,7 +1262,9 @@ async function doImport(){
     position_id:await ensure('positions',poss,cell(r,'position')),
     nationality:cell(r,'nationality')||null,
     phone:cell(r,'phone')||null,
-    iban:cell(r,'iban')||null,
+    passport_no:cell(r,'passport_no')||null,
+    medical_no:cell(r,'medical_no')||null,
+    medical_expiry:toDate(cell(r,'medical_expiry')),
     iqama_expiry:toDate(cell(r,'iqama_expiry')),
     passport_expiry:toDate(cell(r,'passport_expiry'))};
    const ex=nid?S.emp.find(e=>digits(e.nid)===nid):null;
@@ -1241,6 +1285,7 @@ async function doImport(){
     driver_id:drv?drv.id:null,
     km:toNum(cell(r,'km'))||0,
     istimara_expiry:toDate(cell(r,'istimara_expiry')),
+    inspection_expiry:toDate(cell(r,'inspection_expiry')),
     insurance_expiry:toDate(cell(r,'insurance_expiry')),
     status:VSTAT.includes(st)?st:'نشطة'};
    const ex=S.veh.find(v=>nrm(v.plate)===nrm(plate));
@@ -1501,6 +1546,7 @@ const IC={
  wrench:'<path d="M14.5 5.5a4.5 4.5 0 0 0 5.6 5.8l-8.4 8.4a2.3 2.3 0 0 1-3.2-3.2l8.4-8.4a4.5 4.5 0 0 0-2.4-2.6z"/>',
  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.2V12l3.2 2"/>',
  sheet:'<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M9 9v11M14.5 13h4M14.5 16.5h4"/>',
+ doc:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
  coins:'<ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7"/><path d="M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/>',
  bank:'<path d="M4 10h16"/><path d="M12 3 21 8H3z"/><path d="M6 10v8M10 10v8M14 10v8M18 10v8"/><path d="M3 21h18"/>',
  book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 18.5h16"/>',
@@ -1526,6 +1572,7 @@ function navModel(){
  if(can('finance'))ops.push(['fleet','wrench',t('fleet'),0]);
  secs.push([t('navOps'),ops]);
  if(can('finance'))secs.push([t('navMoney'),[['ledger','book',t('ledger'),0]]]);
+ if(can('finance')||me.role==='supervisor')secs.push([t('companyWord'),[['cdocs','doc',t('cdocs'),0]]]);
  const adm=[];
  if(can('manage'))adm.push(['settings','gear',t('settings'),0]);
  if(can('admin'))adm.push(['users','key',t('users'),0]);
@@ -1619,7 +1666,7 @@ function empRows(){
  const L=S.emp.filter(e=>(!F.dept||e.dept===F.dept)&&(!q||e.name.toLowerCase().includes(q)||String(e.phone).includes(q)));
  if(!L.length)return`<p class="empty">${t('noMatch')}</p>`;
  return L.map(e=>{const v=S.veh.find(x=>x.driver===e.id),has=!!loginOf(e.id);
-  return`<article class="card ${worst([e.iqama,e.passport])}">
+  return`<article class="card ${worst([e.iqama,e.passport,e.medical])}">
   <div class="row"><span class="av">${esc(ini(e.name))}</span>
    <div style="flex:1;min-width:0"><div class="ttl">${esc(e.name)}</div>
     <div class="sub">${esc(e.position||e.title)||t('noPosition')}</div></div>
@@ -1627,9 +1674,12 @@ function empRows(){
   ${kv([[t('nid'),e.nid?`<span class="mono">${esc(e.nid)}</span>`:`<span class="tag warn">${t('missing')}</span>`],
     [t('nationality'),esc(e.nat)||'—'],
     [t('phone'),`<span class="mono">${esc(e.phone)||'—'}</span>`],
-    [t('iqama'),expTag(e.iqama)],[t('passport'),expTag(e.passport)],
+    [t('iqama'),expTag(e.iqama)],
+    [t('passportNo'),e.pno?`<span class="mono">${esc(e.pno)}</span>`:'<span class="muted">—</span>'],
+    [t('passport'),expTag(e.passport)],
+    [t('medNo'),e.medno?`<span class="mono">${esc(e.medno)}</span>`:'<span class="muted">—</span>'],
+    [t('medical'),expTag(e.medical)],
     [t('vehicle'),v?esc(v.plate):'<span class="muted">—</span>']]
-   .concat(can('finance')?[[t('iban'),e.iban?`<span class="mono" style="font-size:12px">${esc(e.iban)}</span>`:`<span class="tag bad">${t('missing')}</span>`]]:[])
    .concat(can('admin')?[[t('role'),e.position_id?esc(roleName(posRole(e.position_id))):'<span class="muted">—</span>'],
      [t('loginAccess'),has?`<span class="tag ok">${t('loginOn')}</span>`:`<span class="tag">${t('loginOff')}</span>`]]:[]))}
   ${can('manage')?`<div class="foot">
@@ -1654,7 +1704,8 @@ function vehiclesV(){
  </div>
  <div class="grid g-auto">${S.veh.length?S.veh.map(v=>{
   const sp=S.log.filter(m=>m.veh===v.id&&inMonth(m.date)).reduce((a,m)=>a+(+m.cost||0),0);
-  return`<article class="card ${worst([v.istimara,v.insurance])}">
+  const vf=(S.vfile||[]).filter(f=>f.veh===v.id);
+  return`<article class="card ${worst([v.istimara,v.insurance,v.inspect])}">
    <div class="row"><span class="av ic">${ico('car')}</span>
     <div style="flex:1;min-width:0"><div class="ttl">${esc(v.model)}</div>
      <div class="sub">${esc(ev(v.type))} ${esc(v.year)}</div></div>
@@ -1662,11 +1713,69 @@ function vehiclesV(){
    <div class="plate" style="margin-top:14px">${esc(v.plate)}</div>
    ${kv([[t('driver'),v.driver?esc(empName(v.driver)):`<span class="muted">${t('noDriver')}</span>`],
      [t('odometer'),num(v.km)+' '+t('km')],
-     [t('istimara'),expTag(v.istimara)],[t('insurance'),expTag(v.insurance)]]
+     [t('istimara'),expTag(v.istimara)],[t('insurance'),expTag(v.insurance)],
+     [t('inspection'),expTag(v.inspect)]]
     .concat(can('finance')?[[t('monthCost'),sp?money(sp):'<span class="muted">—</span>']]:[]))}
+   <div class="vfiles">
+    <div class="vfh"><b>${t('vehFiles')}</b>
+     ${can('manage')?`<button class="lnk" data-act="addVehFile" data-id="${v.id}">${t('addVehFile')}</button>`:''}</div>
+    ${vf.length?`<ul class="xl">${vf.map(f=>`<li><div><b>${esc(f.name)}</b></div>
+      <span><button class="lnk" data-act="viewRcp" data-path="${esc(f.path)}">${t('openFile')}</button>
+      ${can('manage')?`<button class="lnk danger" data-act="delVehFile" data-id="${f.id}">${t('del')}</button>`:''}</span></li>`).join('')}</ul>`
+     :`<p class="muted" style="font-size:12.5px;margin:6px 0 0">${t('noVehFiles')}</p>`}
+   </div>
    ${can('manage')?`<div class="foot"><button class="lnk" data-act="editVeh" data-id="${v.id}">${t('edit')}</button>
      <button class="lnk danger" data-act="delVeh" data-id="${v.id}">${t('del')}</button></div>`:''}</article>`}).join('')
   :`<p class="empty">${t('noVehicles')}</p>`}</div>`}
+
+/* ---------- وثائق الشركة ---------- */
+const DCATS=['اشتراك','رخصة','شهادة','سجل','عقد','أخرى'];
+const CD={q:'',cat:''};
+function cdocsV(){
+ const all=(S.cdoc||[]).filter(d=>d.active);
+ const rows=all
+  .filter(d=>!CD.cat||d.cat===CD.cat)
+  .filter(d=>!CD.q||nrm(d.name).includes(nrm(CD.q))||nrm(d.no).includes(nrm(CD.q))||nrm(d.issuer).includes(nrm(CD.q)))
+  .sort((a,b)=>{const x=daysTo(a.expiry),y=daysTo(b.expiry);
+   if(x===null&&y===null)return String(a.name).localeCompare(String(b.name),'ar');
+   if(x===null)return 1;if(y===null)return -1;return x-y});
+ const ex=all.filter(d=>{const n=daysTo(d.expiry);return n!==null&&n<0}).length;
+ const soon=all.filter(d=>{const n=daysTo(d.expiry);return n!==null&&n>=0&&n<=60}).length;
+ const none=all.filter(d=>!d.expiry).length;
+ const fees=all.reduce((a,d)=>a+(+d.cost||0),0);
+
+ return`<div class="pagehead"><div><h1>${t('cdocs')}</h1><p>${t('cdocsSub')}</p></div>
+  <div class="acts">${can('finance')?`<button class="btn gold" data-act="addCdoc">${t('addCdoc')}</button>`:''}</div></div>
+ <div class="kpis">
+  <div class="kpi${ex?' alert':''}"><div class="lab">${t('docsExpired')}</div><div class="num">${num(ex)}</div><div class="sub">${t('cdocs')}</div></div>
+  <div class="kpi${soon?' warn':''}"><div class="lab">${t('docsSoon60')}</div><div class="num">${num(soon)}</div><div class="sub">${t('docsSoon')}</div></div>
+  <div class="kpi"><div class="lab">${t('noExpiry')}</div><div class="num">${num(none)}</div><div class="sub">${num(all.length)} ${t('items')}</div></div>
+  <div class="kpi"><div class="lab">${t('feesYear')}</div><div class="num" style="font-size:24px">${fees?money(fees):'—'}</div><div class="sub">${t('companyWord')}</div></div>
+ </div>
+ <div class="bar">
+  <span class="field"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ink3)" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+   <input id="cdq" type="search" placeholder="${t('searchDoc')}" value="${esc(CD.q)}" aria-label="${t('searchDoc')}"></span>
+  <span class="field" style="flex:0 1 190px"><select id="cdc" aria-label="${t('docCat')}">
+   <option value="">${t('allCats')}</option>
+   ${DCATS.map(c=>`<option value="${esc(c)}" ${CD.cat===c?'selected':''}>${esc(ev(c))}</option>`).join('')}</select></span>
+ </div>
+ <div class="grid g-auto">${rows.length?rows.map(d=>{
+  const n=daysTo(d.expiry);
+  return`<article class="card ${n===null?'':n<0?'bad':n<=60?'warn':''}">
+   <div class="row"><span class="av ic">${ico('doc')}</span>
+    <div style="flex:1;min-width:0"><div class="ttl">${esc(d.name)}</div>
+     <div class="sub">${esc(ev(d.cat))}${d.issuer?' · '+esc(d.issuer):''}</div></div>
+    ${d.expiry?expTag(d.expiry):`<span class="tag">${t('noExpiry')}</span>`}</div>
+   ${kv([[t('docNo'),d.no?`<span dir="ltr">${esc(d.no)}</span>`:'<span class="muted">—</span>'],
+     [t('issuedOnD'),d.issued?fmtD(d.issued):'<span class="muted">—</span>'],
+     [t('expiresOnD'),d.expiry?fmtD(d.expiry):'<span class="muted">—</span>']]
+    .concat(d.cost?[[t('docFee'),money(d.cost)]]:[])
+    .concat([[t('docCopy'),d.file?`<button class="lnk" data-act="viewRcp" data-path="${esc(d.file)}">${t('openCopy')}</button>`
+      :`<span class="muted">${t('noCopy')}</span>`]]))}
+   ${d.note?`<p class="note">${esc(d.note)}</p>`:''}
+   ${can('finance')?`<div class="foot"><button class="lnk" data-act="editCdoc" data-id="${d.id}">${t('edit')}</button>
+     <button class="lnk danger" data-act="delCdoc" data-id="${d.id}">${t('del')}</button></div>`:''}</article>`}).join('')
+  :`<p class="empty">${t('noCdocs')}</p>`}</div>`}
 
 /* ---------- إدخال الشهر ---------- */
 const MS={month:MONTH};
@@ -1905,7 +2014,7 @@ const VIEWS={
  home:[home,1], employees:[employees,1], vehicles:[vehiclesV,1], renewals:[renewals,'team'],
  leave:[leaveV,1], custody:[custodyV,1], monthly:[monthlyV,'team'], adjust:[adjustV,'team'], fleet:[fleet,'finance'],
  ledger:[ledgerV,'finance'],
- settings:[settings,'manage'], users:[users,'admin']};
+ cdocs:[cdocsV,'team'], settings:[settings,'manage'], users:[users,'admin']};
 let cur='home';
 function go(v){
  if(!VIEWS[v])return;
@@ -1947,13 +2056,17 @@ const empFields=()=>[{k:'name',l:t('fullName'),req:1},{k:'national_id',l:t('nid'
  {k:'position_id',l:t('position'),opt:[['','—'],...S.positions.map(p=>[p.id,p.name])]},
  {k:'department_id',l:t('dept'),opt:[['','—'],...S.departments.map(d=>[d.id,d.name])]},
  {k:'nationality',l:t('nationality')},{k:'phone',l:t('phone'),t:'tel'},
- {k:'iban',l:t('iban'),wide:1},
- {k:'iqama_expiry',l:t('iqama'),t:'date'},{k:'passport_expiry',l:t('passport'),t:'date'}];
+ {k:'iqama_expiry',l:t('iqama'),t:'date'},
+ {k:'passport_no',l:t('passportNo')},{k:'passport_expiry',l:t('passport'),t:'date'},
+ {k:'medical_no',l:t('medNo')},{k:'medical_expiry',l:t('medical'),t:'date'}];
 const vehFields=()=>[{k:'model',l:t('model'),req:1},{k:'plate',l:t('plate'),req:1},
  {k:'type',l:t('type'),opt:VTYPES.map(v=>[v,ev(v)])},{k:'year',l:t('year'),t:'number'},
  {k:'driver_id',l:t('assignedDriver'),opt:[['',t('noDriver')],...optEmp()]},
  {k:'km',l:t('odoKm'),t:'number'},{k:'istimara_expiry',l:t('istimara'),t:'date'},
- {k:'insurance_expiry',l:t('insurance'),t:'date'},{k:'status',l:t('status'),opt:VSTAT.map(v=>[v,ev(v)])}];
+ {k:'insurance_expiry',l:t('insurance'),t:'date'},{k:'inspection_expiry',l:t('inspection'),t:'date'},
+ {k:'status',l:t('status'),opt:VSTAT.map(v=>[v,ev(v)])}];
+const vfileFields=()=>[{k:'name',l:t('fileLabel'),req:1,wide:1},
+ {k:'file',l:t('filePick'),t:'file',wide:1}];
 const leaveFields=()=>[{k:'employee_id',l:t('employee'),opt:optEmp()},
  {k:'type',l:t('leaveType'),opt:LTYPES.map(v=>[v,ev(v)])},
  {k:'from_date',l:t('from'),t:'date',req:1},{k:'to_date',l:t('to'),t:'date',req:1},
@@ -1969,6 +2082,12 @@ const cexpFields=()=>[{k:'category',l:t('expItem'),opt:CCATS.map(v=>[v,ev(v)])},
 const logFields=()=>[{k:'vehicle_id',l:t('vehicle'),opt:S.veh.map(v=>[v.id,v.model+' ('+v.plate+')'])},
  {k:'kind',l:t('kind'),opt:FKINDS.map(v=>[v,ev(v)])},{k:'date',l:t('date'),t:'date',req:1},
  {k:'cost',l:t('amountSar'),t:'number',req:1},{k:'note',l:t('notes'),wide:1}];
+const cdocFields=()=>[{k:'name',l:t('docName'),req:1,wide:1},
+ {k:'category',l:t('docCat'),opt:DCATS.map(c=>[c,ev(c)])},
+ {k:'issuer',l:t('docIssuer')},
+ {k:'number',l:t('docNo')},{k:'cost',l:t('docFee'),t:'number'},
+ {k:'issue_date',l:t('issuedOnD'),t:'date'},{k:'expiry_date',l:t('expiresOnD'),t:'date'},
+ {k:'note',l:t('notes'),wide:1},{k:'copy',l:t('docCopy'),t:'file',wide:1}];
 const adjFields=()=>[{k:'employee_id',l:t('employee'),opt:optEmp()},
  {k:'kind',l:t('adjKind'),opt:[['إضافي',ev('إضافي')],['خصم',ev('خصم')]]},
  {k:'unit',l:t('unitWord'),opt:[['ساعة',ev('ساعة')],['يوم',ev('يوم')]]},
@@ -1982,6 +2101,10 @@ $('#view').addEventListener('input',e=>{
  if(e.target.id==='q'||e.target.id==='dept'){
   F.q=$('#q').value;F.dept=$('#dept').value;$('#rows').innerHTML=empRows();return}
  if(e.target.id==='msm'){MS.month=e.target.value||MONTH;render();return}
+ if(e.target.id==='cdq'||e.target.id==='cdc'){
+  CD.q=$('#cdq').value;CD.cat=$('#cdc').value;render();
+  const el=$('#'+e.target.id);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}}
+  return}
  if(e.target.id==='ajq'||e.target.id==='ajm'){
   AJ.q=$('#ajq').value;AJ.month=$('#ajm').value||MONTH;
   render();const el=$('#'+e.target.id);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}}}});
@@ -2017,14 +2140,16 @@ document.addEventListener('click',async e=>{
 
   addEmp:()=>openForm(t('addEmp'),empFields(),{},async o=>{
    await api.ins('employees',{name:o.name,national_id:nul((o.national_id||'').trim()),position_id:nul(o.position_id),
-    department_id:nul(o.department_id),nationality:o.nationality||null,phone:o.phone||null,iban:o.iban||null,
+    department_id:nul(o.department_id),nationality:o.nationality||null,phone:o.phone||null,
+    passport_no:o.passport_no||null,medical_no:o.medical_no||null,medical_expiry:nul(o.medical_expiry),
     iqama_expiry:nul(o.iqama_expiry),passport_expiry:nul(o.passport_expiry)});toast(t('addedOk'))}),
   editEmp:()=>{const x=S.emp.find(e2=>e2.id===id);
    openForm(t('edit'),empFields(),{name:x.name,national_id:x.nid,position_id:x.position_id,department_id:x.dept_id,
-    nationality:x.nat,phone:x.phone,iban:x.iban,
+    nationality:x.nat,phone:x.phone,passport_no:x.pno,medical_no:x.medno,medical_expiry:x.medical,
     iqama_expiry:x.iqama,passport_expiry:x.passport},async o=>{
     await api.upd('employees',id,{name:o.name,national_id:nul((o.national_id||'').trim()),position_id:nul(o.position_id),
-     department_id:nul(o.department_id),nationality:o.nationality||null,phone:o.phone||null,iban:o.iban||null,
+     department_id:nul(o.department_id),nationality:o.nationality||null,phone:o.phone||null,
+     passport_no:o.passport_no||null,medical_no:o.medical_no||null,medical_expiry:nul(o.medical_expiry),
      iqama_expiry:nul(o.iqama_expiry),passport_expiry:nul(o.passport_expiry)});toast(t('savedOk'))})},
   delEmp:async()=>{const x=S.emp.find(e2=>e2.id===id);
    if(!ask(t('del')+' — '+x.name+'?'))return;
@@ -2111,14 +2236,26 @@ document.addEventListener('click',async e=>{
 
   addVeh:()=>openForm(t('addVeh'),vehFields(),{type:'بيك أب',status:'نشطة'},async o=>{
    await api.ins('vehicles',{model:o.model,plate:o.plate,type:o.type,year:nm(o.year),driver_id:nul(o.driver_id),
-    km:nm(o.km)||0,istimara_expiry:nul(o.istimara_expiry),insurance_expiry:nul(o.insurance_expiry),status:o.status});
+    km:nm(o.km)||0,istimara_expiry:nul(o.istimara_expiry),insurance_expiry:nul(o.insurance_expiry),
+    inspection_expiry:nul(o.inspection_expiry),status:o.status});
    toast(t('addedOk'))}),
   editVeh:()=>{const x=S.veh.find(v=>v.id===id);
    openForm(t('edit'),vehFields(),{model:x.model,plate:x.plate,type:x.type,year:x.year,driver_id:x.driver,km:x.km,
-    istimara_expiry:x.istimara,insurance_expiry:x.insurance,status:x.status},async o=>{
+    istimara_expiry:x.istimara,insurance_expiry:x.insurance,inspection_expiry:x.inspect,status:x.status},async o=>{
     await api.upd('vehicles',id,{model:o.model,plate:o.plate,type:o.type,year:nm(o.year),driver_id:nul(o.driver_id),
-     km:nm(o.km)||0,istimara_expiry:nul(o.istimara_expiry),insurance_expiry:nul(o.insurance_expiry),status:o.status});
+     km:nm(o.km)||0,istimara_expiry:nul(o.istimara_expiry),insurance_expiry:nul(o.insurance_expiry),
+     inspection_expiry:nul(o.inspection_expiry),status:o.status});
     toast(t('savedOk'))})},
+  addVehFile:()=>{if(!can('manage'))return toast(t('noPermission'));
+   const v=S.veh.find(x=>x.id===id);if(!v)return;
+   openForm(t('addVehFile')+' — '+v.plate,vfileFields(),{name:t('istimara')},async o=>{
+    if(!o.file||!o.file.size){toast(t('filePick'));return false}
+    const path=await uploadReceipt(o.file);
+    await api.ins('vehicle_files',{vehicle_id:v.id,name:o.name.trim()||t('vehFiles'),path});
+    toast(t('fileAdded'))})},
+  delVehFile:async()=>{if(!can('manage'))return;
+   if(!ask(t('confirmDelItem')))return;
+   try{await api.del('vehicle_files',id);await refreshAll();toast(t('deletedOk'))}catch(ex){toast(ex.message)}},
   delVeh:async()=>{const x=S.veh.find(v=>v.id===id);
    if(!ask(t('del')+' — '+x.model+' ('+x.plate+')?'))return;
    try{await api.del('vehicles',id);await refreshAll();toast(t('deletedOk'))}catch(ex){toast(ex.message)}},
@@ -2147,6 +2284,27 @@ document.addEventListener('click',async e=>{
 
   noop:()=>{},
   goMonthly:()=>go('monthly'),
+  addCdoc:()=>{if(!can('finance'))return toast(t('noPermission'));
+   openForm(t('addCdoc'),cdocFields(),{category:'اشتراك'},async o=>{
+    if(!o.name.trim()){toast(t('saveFailed'));return false}
+    let path=null;
+    if(o.copy&&o.copy.size)path=await uploadReceipt(o.copy);
+    await api.ins('company_docs',{name:o.name.trim(),category:o.category,issuer:o.issuer||null,
+     number:o.number||null,cost:nm(o.cost)||0,issue_date:nul(o.issue_date),
+     expiry_date:nul(o.expiry_date),note:o.note||null,file_path:path});toast(t('addedOk'))})},
+  editCdoc:()=>{if(!can('finance'))return;
+   const x=(S.cdoc||[]).find(d=>d.id===id);if(!x)return;
+   openForm(t('editCdoc'),cdocFields(),{name:x.name,category:x.cat,issuer:x.issuer,number:x.no,
+    cost:x.cost||'',issue_date:x.issued,expiry_date:x.expiry,note:x.note},async o=>{
+    if(!o.name.trim()){toast(t('saveFailed'));return false}
+    const patch={name:o.name.trim(),category:o.category,issuer:o.issuer||null,
+     number:o.number||null,cost:nm(o.cost)||0,issue_date:nul(o.issue_date),
+     expiry_date:nul(o.expiry_date),note:o.note||null};
+    if(o.copy&&o.copy.size)patch.file_path=await uploadReceipt(o.copy);
+    await api.upd('company_docs',id,patch);toast(t('savedOk'))})},
+  delCdoc:async()=>{const x=(S.cdoc||[]).find(d=>d.id===id);if(!x)return;
+   if(!ask(t('del')+' — '+x.name+'?'))return;
+   try{await api.del('company_docs',id);await refreshAll();toast(t('deletedOk'))}catch(ex){toast(ex.message)}},
   saveSheet:async()=>{
    if(!can('team'))return toast(t('noPermission'));
    const m=MS.month,day=monthEnd(m);
