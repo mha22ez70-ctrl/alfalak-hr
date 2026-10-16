@@ -246,6 +246,19 @@ main{flex:1;min-width:0;padding:20px 16px calc(40px + env(safe-area-inset-bottom
   font-weight:700;letter-spacing:.6px;font-family:var(--fd);font-size:14px}
 
 .tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+/* سجل الوقود: صف المركبة يُفتح على تفاصيل تعبئاتها */
+tr.fu{cursor:pointer}
+tr.fu:hover td{background:var(--sunk)}
+tr.fu.bad td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
+tr.fu .caret{color:var(--ink3);margin-inline-start:6px;font-size:12px}
+tr.fu small{display:block;color:var(--ink3);font-size:12px;font-weight:400}
+tr.fudet>td{padding:0;background:var(--sunk)}
+tr.fudet table{min-width:0}
+.tbl.sub,table.sub{border:0;background:transparent}
+table.sub th{padding:9px 14px;font-size:10.5px;background:transparent}
+table.sub td{padding:9px 14px;font-size:13px;border-bottom:1px solid var(--line)}
+table.sub tr:last-child td{border-bottom:0}
 table{width:100%;border-collapse:collapse;min-width:620px}
 th{text-align:start;font-size:11.5px;font-weight:600;letter-spacing:.06em;color:var(--ink2);
   padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap;text-transform:uppercase}
@@ -426,7 +439,7 @@ const BUILT_IN = {
   key: 'sb_publishable__DH_rGvL6-b2xS9G2X-ujg_H2MoIOws'
 };
 
-const APP_VERSION='38';
+const APP_VERSION='39';
 const LOGO='data:image/png;base64,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';
 
 /* ───────── أدوات عامة ───────── */
@@ -598,6 +611,28 @@ const AR={
  uploadFailed:'تعذر رفع صورة الفاتورة', receiptFailed:'تعذر فتح الفاتورة',
  copyFailed:'تعذر النسخ', menu:'القائمة',
  impBtn:'استيراد من إكسل', impRun:'استيراد',
+ month:'الشهر', note:'ملاحظات',
+ fuTitle:'استهلاك الوقود', fuSub:'سجل شهري لكل مركبة — اضغط الصف لترى تفاصيل تعبئاته',
+ fuImport:'استيراد استهلاك الوقود', fuRun:'استيراد', fuPick:'اختر تقرير الدريس (xlsx أو CSV)',
+ fuHint:'يقرأ تقرير الدريس بصيغتيه: التفصيلي (سطر لكل تعبئة) والملخص الشهري (سطر لكل مركبة). ارفع الملف كما نزّلته — لا تعدّل فيه.',
+ fuRule:'الشهر يُستورد مرة واحدة. لإعادة استيراده تراجَع عنه أولاً — والتراجع يمحو عملياته كلها ويفتح قفله.',
+ fuRead:'قرأت', fuTx:'عملية', fuVehRows:'مركبة', fuMonthIs:'شهر البيانات:',
+ fuTotals:'إجماليات الملف:', fuPlates:'لوحة',
+ fuUnmatched:'{n} لوحة في الملف ليست في سجل المركبات. ستُحفظ وتظهر معلَّمة — وهي أهم ما في التقرير.',
+ fuUnmatchedShort:'لوحة غير مسجّلة', fuDupInFile:'أسطر متطابقة في الملف تجاهلتها:',
+ fuLocked:'شهر {m} مستورد من قبل. تراجَع عنه أولاً إن أردت استيراده من جديد.',
+ fuNothingNew:'لا جديد في هذا الملف — كل عملياته مسجّلة من قبل',
+ fuNoCols:'لم أتعرّف على أعمدة تقرير الوقود في هذا الملف',
+ fuNoRows:'لم أجد عمليات تعبئة في الملف', fuNoMonth:'لم أتمكن من تحديد شهر البيانات',
+ fuOk:'تم استيراد', fuDone:'الأشهر المستورَدة:', fuEmpty:'لا يوجد استهلاك وقود بعد. ابدأ باستيراد تقرير الدريس.',
+ fuUndoAsk:'التراجع عن استيراد شهر {m}؟\n\nستُحذف كل عملياته، ويُفتح الشهر للاستيراد من جديد.',
+ fuUndone:'تم التراجع عن', fuVehicles:'مركبة', fuAvgPrice:'متوسط السعر', fuAvgFill:'متوسط التعبئة',
+ fuStation:'المحطة', fuProduct:'المنتج', fuInReg:'في السجل', fuUnreg:'غير مسجّلة',
+ fuUnregHead:'{n} لوحة تسحب وقوداً وليست في سجل المركبات',
+ fuUnregNote:'كل لوحة هنا تحتاج تفسيراً: مركبة ناقصة من السجل، أم بطاقة بقيت فعّالة على مركبة لم تعد للشركة؟',
+ fuOfBill:'من الفاتورة', fuNear:'بعد السابقة بـ{n} دقيقة', fuTiny:'تعبئة ضئيلة', fuNight:'تعبئة ليلية',
+ fuSummaryOnly:'هذا الشهر مستورد من الملخص الشهري — لا تفاصيل لعملياته. استورد التقرير التفصيلي لتراها.',
+ fuVendorFlag:'علامة الدريس', fuAllTx:'كل العمليات', liter:'لتر', liters:'اللترات', perLiter:'ريال/لتر', undo:'تراجع',
  expBtn:'تصدير إلى إكسل', expDone:'تم التصدير — عدد الأسطر',
  expEmpty:'لا توجد بيانات للتصدير',
  impExport:'تصدير البيانات الحالية للتعديل',
@@ -821,6 +856,28 @@ const EN={
  uploadFailed:'Could not upload the receipt', receiptFailed:'Could not open the receipt',
  copyFailed:'Could not copy', menu:'Menu',
  impBtn:'Import from Excel', impRun:'Import',
+ month:'Month', note:'Notes',
+ fuTitle:'Fuel usage', fuSub:'A monthly record per vehicle — tap a row for its fill-ups',
+ fuImport:'Import fuel usage', fuRun:'Import', fuPick:'Choose the Aldrees report (xlsx or CSV)',
+ fuHint:'Reads both Aldrees formats: the detailed report (one row per fill-up) and the monthly summary (one row per vehicle). Upload the file as downloaded — do not edit it.',
+ fuRule:'A month is imported once. To import it again, undo it first — undo removes all its transactions and unlocks the month.',
+ fuRead:'Read', fuTx:'transactions', fuVehRows:'vehicles', fuMonthIs:'Data month:',
+ fuTotals:'File totals:', fuPlates:'plates',
+ fuUnmatched:'{n} plates in the file are not in the vehicle register. They are kept and shown flagged — they are the most important thing in the report.',
+ fuUnmatchedShort:'unregistered plates', fuDupInFile:'Identical rows in the file, skipped:',
+ fuLocked:'{m} has already been imported. Undo it first to import it again.',
+ fuNothingNew:'Nothing new in this file — every transaction is already recorded',
+ fuNoCols:'I could not recognise fuel report columns in this file',
+ fuNoRows:'No fill-ups found in the file', fuNoMonth:'I could not determine the data month',
+ fuOk:'Imported', fuDone:'Months already imported:', fuEmpty:'No fuel usage yet. Start by importing the Aldrees report.',
+ fuUndoAsk:'Undo the import for {m}?\n\nAll its transactions will be deleted and the month reopened.',
+ fuUndone:'Undone', fuVehicles:'vehicles', fuAvgPrice:'Avg price', fuAvgFill:'Avg fill',
+ fuStation:'Station', fuProduct:'Product', fuInReg:'In register', fuUnreg:'Unregistered',
+ fuUnregHead:'{n} plates drawing fuel are not in the vehicle register',
+ fuUnregNote:'Each plate here needs an explanation: a vehicle missing from the register, or a card still active on a vehicle the company no longer owns?',
+ fuOfBill:'of the bill', fuNear:'{n} min after the previous', fuTiny:'Tiny fill', fuNight:'Night fill',
+ fuSummaryOnly:'This month was imported from the monthly summary — it has no per-transaction detail. Import the detailed report to see it.',
+ fuVendorFlag:'Vendor flag', fuAllTx:'All transactions', liter:'L', liters:'Litres', perLiter:'SAR/L', undo:'Undo',
  expBtn:'Export to Excel', expDone:'Exported — rows',
  expEmpty:'Nothing to export',
  impExport:'Export current data for editing',
@@ -1000,7 +1057,7 @@ async function receiptLink(path){
 const TABLES=['org_settings','departments','projects','positions','employees','vehicles',
  'leaves','daily_reports','custody','custody_expenses','fleet_log',
  'time_adjustments','company_docs','vehicle_files','adj_periods','vehicle_drivers',
- 'import_batches','profiles'];
+ 'import_batches','profiles','fuel_tx','fuel_periods'];
 
 async function load(){
  const out={};
@@ -1036,6 +1093,12 @@ async function load(){
     from:d.from_date||'',to:d.to_date||'',note:d.note||''})),
   period:(out.adj_periods||[]).map(p=>({id:p.id,dept:p.department_id,month:p.month,
     status:p.status,at:p.posted_at||''})),
+  fuel:(out.fuel_tx||[]).map(f=>({id:f.id,veh:f.vehicle_id||'',plate:f.plate_raw||'',
+    month:f.month,at:f.tx_at||'',ltr:+f.liters||0,amt:+f.amount||0,
+    station:f.station||'',driver:f.driver_name||'',product:f.product||'',
+    flag:f.vendor_flag||'',src:f.src||'detail'})),
+  fuPeriods:(out.fuel_periods||[]).map(x=>({month:x.month,kind:x.kind,
+    liters:+x.liters||0,amount:+x.amount||0,tx_count:+x.tx_count||0,at:x.imported_at||''})),
   cdoc:(out.company_docs||[]).map(d=>({id:d.id,name:d.name,cat:d.category,issuer:d.issuer||'',
     no:d.number||'',issued:d.issue_date||'',expiry:d.expiry_date||'',cost:+d.cost||0,
     file:d.file_path||'',note:d.note||'',active:d.active!==false})),
@@ -1485,6 +1548,226 @@ function downloadCSV(name,head,sample){
  const blob=new Blob(['﻿'+body],{type:'text/csv;charset=utf-8'});
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+
+/* ═══════════════ استهلاك الوقود — قراءة تقارير الدريس ═══════════════
+   يقرأ الصيغتين:
+     التفصيلي — سطر لكل تعبئة، فيه التاريخ والمحطة والسائق
+     الملخص   — سطر لكل مركبة في الشهر
+   يُميّزهما من عناوين الأعمدة، ويجد صف العناوين بنفسه مهما نزل.   */
+
+const FUEL_COLS={
+ detail:{plate:['رقماللوحه','اللوحه','plate','plateno'],
+         at:['التاريخ','تاريخالعمليه','date','txdate'],
+         liters:['اللترات','الكميه','لتر','liters','quantity','qty'],
+         amount:['المبلغ','القيمه','amount','value'],
+         station:['المحطه','محطه','station'],
+         driver:['السائق','اسمالسائق','driver'],
+         product:['نوعالمنتج','المنتج','نوعالوقود','product','fuel'],
+         flag:['غير','مخالف','flag']},
+ summary:{plate:['لوحهبطاقه','لوحه/بطاقه','اللوحه','رقماللوحه','plate','card'],
+         liters:['الكميه','اللترات','liters','quantity','qty'],
+         amount:['شاملالضريبه','الاجماليشاملالضريبه','المبلغشاملالضريبه','total','gross'],
+         net:['المبلغ','amount','net'],
+         vat:['الضريبه','vat','tax'],
+         product:['رقممرجعالعميل','نوعالمنتج','المنتج','product'],
+         service:['نوعالخدمه','service']}}
+
+/*  يبحث عن صف العناوين في أول 40 سطراً، ويقرر الصيغة من محتواه  */
+function fuelLayout(rows){
+ for(let r=0;r<Math.min(rows.length,40);r++){
+  const cells=(rows[r]||[]).map(nrm);
+  if(!cells.length)continue;
+  const hit=(list)=>{const idx={};
+   for(const f in list){
+    const i=cells.findIndex(c=>c&&list[f].includes(c));
+    if(i>=0)idx[f]=i}
+   return idx};
+  const d=hit(FUEL_COLS.detail);
+  if(d.plate!==undefined&&d.at!==undefined&&d.liters!==undefined)
+   return {kind:'detail',head:r,idx:d};
+  const s=hit(FUEL_COLS.summary);
+  if(s.plate!==undefined&&s.liters!==undefined&&(s.amount!==undefined||s.net!==undefined))
+   return {kind:'summary',head:r,idx:s};
+ }
+ return null}
+
+/*  تاريخ إكسل: قد يصل رقماً تسلسلياً أو نصاً  */
+function fuelDate(v){
+ if(v===''||v==null)return null;
+ if(v instanceof Date)return isNaN(v)?null:v;
+ const s=String(v).trim();if(!s)return null;
+ if(/^\d+(\.\d+)?$/.test(s)){const n=+s;
+  if(n>20000&&n<80000){
+   const ms=Date.UTC(1899,11,30)+Math.round(n*864e5);
+   return new Date(ms)}}
+ let m=s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})(?:[ ,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+ if(m)return new Date(Date.UTC(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0),+(m[6]||0)));
+ m=s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:[T ](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+ if(m)return new Date(Date.UTC(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0),+(m[6]||0)));
+ const d=new Date(s);return isNaN(d)?null:d}
+
+const MONTHS_EN=['january','february','march','april','may','june',
+ 'july','august','september','october','november','december'];
+
+/*  شهر البيانات.
+    لا يُؤخذ من أول تاريخ في الرأس — فأول تاريخ هناك هو تاريخ الطباعة،
+    وقد يكون في شهر غير شهر البيانات. الترتيب الصحيح:
+      ١) تواريخ العمليات نفسها، وهي الحقيقة لا الوصف
+      ٢) الخلية المجاورة للعنوان «الفترة»
+      ٣) مدى تواريخ أو اسم شهر في الرأس، متجاهلين سطر تاريخ الطباعة  */
+const monthOfDate=d=>d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0');
+
+function monthFromText(s){
+ s=String(s||'').trim();if(!s)return null;
+ let m=s.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+ if(m)return m[3]+'-'+String(m[2]).padStart(2,'0');
+ m=s.match(/(\d{4})[-/](\d{1,2})/);
+ if(m)return m[1]+'-'+String(m[2]).padStart(2,'0');
+ m=s.toLowerCase().match(/([a-z]{3,})\s+(\d{4})/);
+ if(m){const i=MONTHS_EN.findIndex(x=>x.startsWith(m[1].slice(0,3)));
+  if(i>=0)return m[2]+'-'+String(i+1).padStart(2,'0')}
+ return null}
+
+function fuelMonth(rows,head,dates){
+ /* ١) أغلب تواريخ العمليات */
+ if(dates&&dates.length){
+  const c={};let best=null,bn=0;
+  for(const d of dates){const k=monthOfDate(d);
+   c[k]=(c[k]||0)+1;if(c[k]>bn){bn=c[k];best=k}}
+  if(best)return best}
+ /* ٢) سطر «الفترة» */
+ for(let r=0;r<Math.min(rows.length,head+1);r++){
+  const row=rows[r]||[];
+  if(!row.some(c=>nrm(c)==='الفتره'))continue;
+  for(const c of row){
+   if(nrm(c)==='الفتره')continue;
+   const m=monthFromText(c);if(m)return m}}
+ /* ٣) الرأس كله، بعد تجاوز سطر تاريخ الطباعة */
+ for(let r=0;r<Math.min(rows.length,head+1);r++){
+  const row=rows[r]||[];
+  if(row.some(c=>/تاريخ\s*الطباعة|print\s*date/i.test(String(c||''))))continue;
+  for(const c of row){const m=monthFromText(c);if(m)return m}}
+ return null}
+
+/*  البصمة: نصٌّ يميّز العملية تمييزاً قاطعاً. بلا تعمية — الفهرس
+    الفريد في القاعدة يكفي، والنص المقروء أسهل في تتبّع أي خلل.   */
+const fuelFp=(o,month)=>o.at
+ ? 'd|'+o.plate+'|'+o.at+'|'+o.liters.toFixed(2)+'|'+o.amount.toFixed(2)
+ : 's|'+o.plate+'|'+month+'|'+o.liters.toFixed(2)+'|'+o.amount.toFixed(2);
+
+async function readFuel(file){
+ const rows=await readSheet(file);
+ const lay=fuelLayout(rows);
+ if(!lay)throw new Error(t('fuNoCols'));
+ const {kind,head,idx}=lay;
+ const cell=(r,f)=>idx[f]===undefined?'':(r[idx[f]]??'');
+ const out=[],dates=[];
+ for(let i=head+1;i<rows.length;i++){
+  const r=rows[i]||[];
+  const plate=String(cell(r,'plate')??'').trim();
+  if(!plate||!/\d/.test(plate))continue;
+  const liters=toNum(cell(r,'liters'));
+  if(liters===null)continue;
+  let amount=toNum(cell(r,'amount'));
+  if(kind==='summary'&&amount===null)amount=toNum(cell(r,'net'));
+  const d=kind==='detail'?fuelDate(cell(r,'at')):null;
+  if(d)dates.push(d);
+  out.push({plate,at:d?d.toISOString():null,liters:+liters||0,amount:+amount||0,
+   station:String(cell(r,'station')??'').trim()||null,
+   driver:String(cell(r,'driver')??'').trim()||null,
+   product:String(cell(r,'product')??'').trim()||null,
+   flag:String(cell(r,'flag')??'').trim()||null})}
+ if(!out.length)throw new Error(t('fuNoRows'));
+ const month=fuelMonth(rows,head,dates);
+ if(!month)throw new Error(t('fuNoMonth'));
+ out.forEach(o=>o.fp=fuelFp(o,month));
+ /*  ملفٌ فيه سطران متطابقان تماماً: نُبقي واحداً، وإلا رفضتهما القاعدة معاً  */
+ const seen={},rowsOut=[];
+ let dupInFile=0;
+ for(const o of out){
+  if(seen[o.fp]){dupInFile++;continue}
+  seen[o.fp]=1;rowsOut.push(o)}
+ return {kind,month,rows:rowsOut,dupInFile,
+  liters:rowsOut.reduce((a,o)=>a+o.liters,0),
+  amount:rowsOut.reduce((a,o)=>a+o.amount,0),
+  plates:Object.keys(rowsOut.reduce((a,o)=>(a[o.plate]=1,a),{})).length}}
+
+/* ───── نافذة استيراد الوقود ───── */
+let FUIMP=null;
+
+function openFuelImport(){
+ FUIMP=null;
+ $('#dlgTitle').textContent=t('fuImport');
+ const done=(S.fuPeriods||[]).map(p=>p.month).sort().reverse();
+ $('#fields').innerHTML=`
+  <label class="wide">${t('fuPick')}
+   <input id="fuFile" type="file" accept=".xlsx,.csv,.txt"></label>
+  <div class="wide">
+   <p class="note">${t('fuHint')}</p>
+   <p class="note" style="background:var(--oksoft);color:var(--ok)">${t('fuRule')}</p>
+  </div>
+  <div class="wide" id="fuOut"></div>
+  <div class="wide">${done.length?`<p class="note"><b>${t('fuDone')}</b><br>${
+    done.map(mn=>{const p=(S.fuPeriods||[]).find(x=>x.month===mn)||{};
+     return `<span dir="auto">${esc(mn)} — ${num(p.tx_count||0)} ${t('fuTx')} · ${money(+p.amount||0)}</span>
+      <button type="button" class="lnk danger" data-act="undoFuel" data-month="${esc(mn)}">${t('undo')}</button>`})
+    .join('<br>')}</p>`:''}</div>`;
+ $('#dlgSave').hidden=false;$('#dlgSave').textContent=t('fuRun');$('#dlgSave').disabled=true;
+ $('#fuFile').addEventListener('change',async ev=>{
+  const f=ev.target.files[0];if(!f)return;
+  const out=$('#fuOut');out.innerHTML=`<p class="note">${t('impReading')}</p>`;
+  $('#dlgSave').disabled=true;
+  try{
+   const o=await readFuel(f);o.file=f.name;
+   const locked=(S.fuPeriods||[]).some(p=>p.month===o.month);
+   FUIMP=locked?null:o;
+   const known=o.rows.filter(r=>vehByPlate(r.plate)).length;
+   out.innerHTML=`
+    <p class="note" style="background:var(--oksoft);color:var(--ok)">
+     ${t('fuRead')} <b>${num(o.rows.length)}</b> ${o.kind==='detail'?t('fuTx'):t('fuVehRows')}
+     · ${t('fuMonthIs')} <b dir="auto">${esc(o.month)}</b></p>
+    <p class="note">${t('fuTotals')}<br>
+     <b>${num(Math.round(o.liters))}</b> ${t('liter')} · <b>${money(o.amount)}</b>
+     · ${num(o.plates)} ${t('fuPlates')}</p>
+    ${o.plates-new Set(o.rows.filter(r=>vehByPlate(r.plate)).map(r=>r.plate)).size
+      ?`<p class="note" style="background:var(--badsoft);color:var(--bad)">${t('fuUnmatched')
+        .replace('{n}',num(o.plates-new Set(o.rows.filter(r=>vehByPlate(r.plate)).map(r=>r.plate)).size))}</p>`:''}
+    ${o.dupInFile?`<p class="note">${t('fuDupInFile')} ${num(o.dupInFile)}</p>`:''}
+    ${locked?`<p class="note bad">${t('fuLocked').replace('{m}',esc(o.month))}</p>`:''}`;
+   $('#dlgSave').disabled=locked;
+  }catch(ex){out.innerHTML=`<p class="note bad">${esc(ex.message)}</p>`;FUIMP=null}});
+ onSave=doFuelImport;
+ $('#dlg').showModal()}
+
+async function doFuelImport(){
+ if(!FUIMP)return false;
+ const o=FUIMP;
+ $('#fuOut').innerHTML=`<p class="note">${t('impWorking')}</p>`;
+ const r=await api.rpc('import_fuel',
+   {p_month:o.month,p_kind:o.kind,p_file:o.file||null,p_rows:o.rows});
+ const res=Array.isArray(r)?r[0]:r;
+ if(!res||!res.ok){
+  const code=res&&res.code;
+  throw new Error(code==='month_locked'?t('fuLocked').replace('{m}',o.month)
+   :code==='nothing_new'?t('fuNothingNew')
+   :code==='not_allowed'?t('noPermission')
+   :String(code||t('saveFailed')))}
+ FUIMP=null;
+ await refreshAll();
+ toast(`${t('fuOk')} ${esc(res.month)} — ${num(res.added)} ${t('fuTx')}`
+  +(res.unmatched?` · ${num(res.unmatched)} ${t('fuUnmatchedShort')}`:''));
+ return true}
+
+async function undoFuel(month){
+ if(!confirm(t('fuUndoAsk').replace('{m}',month)))return;
+ busy(true);
+ try{
+  const r=await api.rpc('undo_fuel',{p_month:month});
+  const res=Array.isArray(r)?r[0]:r;
+  if(!res||!res.ok)throw new Error(t('saveFailed'));
+  await refreshAll();
+  toast(`${t('fuUndone')} ${month} — ${num(res.removed)}`)}
+ catch(ex){toast(ex.message)}finally{busy(false)}}
 
 /* ───── شاشة الاستيراد ───── */
 let IMP={kind:null,rows:null,idx:null};
@@ -1961,6 +2244,7 @@ const IC={
  chart:'<path d="M4 20V4"/><path d="M4 20h16"/><rect x="7.5" y="12" width="3.4" height="5"/><rect x="13.5" y="8" width="3.4" height="9"/>',
  palm:'<path d="M12 21V11"/><path d="M12 11c-3-3-6-2-7 0 2-4 5-4.5 7-2"/><path d="M12 11c3-3 6-2 7 0-2-4-5-4.5-7-2"/>',
  wallet:'<rect x="3" y="6" width="18" height="13" rx="2.4"/><path d="M3 10h18"/><path d="M15.5 14.5h3"/>',
+ gas:'<path d="M3 21h10V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M6 8h4M13 10h3a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V9l-3-3"/>',
  wrench:'<path d="M14.5 5.5a4.5 4.5 0 0 0 5.6 5.8l-8.4 8.4a2.3 2.3 0 0 1-3.2-3.2l8.4-8.4a4.5 4.5 0 0 0-2.4-2.6z"/>',
  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.2V12l3.2 2"/>',
  sheet:'<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M9 9v11M14.5 13h4M14.5 16.5h4"/>',
@@ -1988,7 +2272,7 @@ function navModel(){
  const ops=[['leave','palm',can('approve')?t('leaves'):t('myLeaves'),can('approve')?pend:0],
             ['custody','wallet',t('custody'),0]];
  if(can('team'))ops.push(['monthly','sheet',t('monthly'),0],['adjust','clock',t('adjust'),0]);
- if(can('finance'))ops.push(['fleet','wrench',t('fleet'),0],['fleetrep','chart',t('fleetReport'),0]);
+ if(can('finance'))ops.push(['fleet','wrench',t('fleet'),0],['fuel','gas',t('fuTitle'),0],['fleetrep','chart',t('fleetReport'),0]);
  secs.push([t('navOps'),ops]);
  if(can('finance'))secs.push([t('navMoney'),[['ledger','book',t('ledger'),0]]]);
  if(can('finance')||me.role==='supervisor')secs.push([t('companyWord'),[['cdocs','doc',t('cdocs'),0]]]);
@@ -2556,7 +2840,10 @@ function fleet(){
  const M=S.log.filter(m=>inMonth(m.date)),sum=k=>M.filter(m=>m.kind===k).reduce((a,m)=>a+(+m.cost||0),0);
  const L=[...S.log].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  return`<div class="pagehead"><div><h1>${t('fleet')}</h1><p>${monthName()}</p></div>
-  <div class="acts"><button class="btn gold" data-act="addLog" ${S.veh.length?'':'disabled'}>${t('logExpense')}</button></div></div>
+  <div class="acts">${can('finance')?`<button class="btn" data-act="fuel">${t('fuTitle')}</button>
+   <button class="btn" data-act="fuExport">${t('expBtn')}</button>
+   <button class="btn" data-act="fuImport">${t('fuImport')}</button>`:''}
+   <button class="btn gold" data-act="addLog" ${S.veh.length?'':'disabled'}>${t('logExpense')}</button></div></div>
  <div class="kpis">
   <div class="kpi"><div class="lab">${t('fuel')}</div><div class="num">${num(Math.round(sum('وقود')))}</div><div class="sub">${t('currency')}</div></div>
   <div class="kpi"><div class="lab">${t('maint')}</div><div class="num">${num(Math.round(sum('صيانة')))}</div><div class="sub">${t('currency')}</div></div>
@@ -2572,6 +2859,176 @@ function fleet(){
    ${m.src?`<p class="note">${t('paidFrom')} ${esc(custOwner(m.src))}</p>`
     :`<div class="foot"><button class="lnk danger" data-act="delLog" data-id="${m.id}">${t('del')}</button></div>`}
   </article>`}).join(''):`<p class="empty">${t('noFleetExp')}</p>`}</div>`}
+
+/* ═══════════════ سجل استهلاك الوقود ═══════════════ */
+
+const plateKey=p=>{const s=String(p??'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي');
+ return (s.match(/\d/g)||[]).join('')+'|'+(s.match(/[ء-ي]/g)||[]).join('')};
+const vehByPlate=p=>{const k=plateKey(p);return S.veh.find(v=>plateKey(v.plate)===k)};
+
+let FU={month:'',open:''};          /* الشهر المعروض، والصف المفتوح */
+
+function fuelMonths(){
+ const m={};
+ for(const f of (S.fuel||[]))m[f.month]=1;
+ return Object.keys(m).sort().reverse()}
+
+/*  صف لكل مركبة في الشهر المختار  */
+function fuelRows(month){
+ const by={};
+ for(const f of (S.fuel||[])){
+  if(f.month!==month)continue;
+  const k=f.veh||('?'+f.plate);
+  const v=f.veh?S.veh.find(x=>x.id===f.veh):null;
+  const r=by[k]||(by[k]={id:k,veh:f.veh||'',plate:v?v.plate:f.plate,
+    model:v?v.model:'',type:v?v.type:'',reg:!!v,n:0,ltr:0,amt:0,tx:[]});
+  r.n++;r.ltr+=f.ltr;r.amt+=f.amt;r.tx.push(f)}
+ const L=Object.values(by);
+ L.forEach(r=>r.tx.sort((a,b)=>String(a.at||'').localeCompare(String(b.at||''))));
+ return L.sort((a,b)=>b.amt-a.amt)}
+
+function fuelV(){
+ const months=fuelMonths();
+ if(!months.length)return`<div class="pagehead"><div><h1>${t('fuTitle')}</h1><p>${t('fuSub')}</p></div>
+   <div class="acts">${can('finance')?`<button class="btn gold" data-act="fuImport">${t('fuImport')}</button>`:''}</div></div>
+  <p class="empty">${t('fuEmpty')}</p>`;
+ if(!FU.month||months.indexOf(FU.month)<0)FU.month=months[0];
+ const R=fuelRows(FU.month);
+ const T={n:0,ltr:0,amt:0};R.forEach(r=>{T.n+=r.n;T.ltr+=r.ltr;T.amt+=r.amt});
+ const un=R.filter(r=>!r.reg);
+ const unL=un.reduce((a,r)=>a+r.ltr,0),unA=un.reduce((a,r)=>a+r.amt,0);
+ const prevM=months[months.indexOf(FU.month)+1];
+ const prevA=prevM?(S.fuel||[]).filter(f=>f.month===prevM).reduce((a,f)=>a+f.amt,0):0;
+ const diff=prevA?((T.amt-prevA)/prevA*100):null;
+
+ return`<div class="pagehead"><div><h1>${t('fuTitle')}</h1><p>${t('fuSub')}</p></div>
+  <div class="acts">
+   ${can('finance')?`<button class="btn" data-act="fuExport">${t('expBtn')}</button>
+   <button class="btn" data-act="fuPdf">${t('exportPdf')}</button>
+   <button class="btn gold" data-act="fuImport">${t('fuImport')}</button>`:''}</div></div>
+
+ <div class="bar">
+  <span class="field"><label for="fuMonth" class="muted">${t('month')}</label>
+   <select id="fuMonth">${months.map(m=>`<option value="${esc(m)}"${m===FU.month?' selected':''}>${esc(m)}</option>`).join('')}</select></span>
+ </div>
+
+ <div class="kpis">
+  <div class="kpi"><div class="lab">${t('liters')}</div><div class="num">${num(Math.round(T.ltr))}</div><div class="sub">${t('liter')}</div></div>
+  <div class="kpi"><div class="lab">${t('total')}</div><div class="num">${num(Math.round(T.amt))}</div><div class="sub">${t('currency')}${
+    diff===null?'':` · ${diff>=0?'▲':'▼'} ${Math.abs(diff).toFixed(0)}%`}</div></div>
+  <div class="kpi"><div class="lab">${t('fuVehicles')}</div><div class="num">${num(R.length)}</div><div class="sub">${num(T.n)} ${t('fuTx')}</div></div>
+  <div class="kpi"><div class="lab">${t('fuAvgPrice')}</div><div class="num">${T.ltr?(T.amt/T.ltr).toFixed(2):'—'}</div><div class="sub">${t('perLiter')}</div></div>
+ </div>
+
+ ${un.length?`<p class="note" style="background:var(--badsoft);color:var(--bad)">
+   <b>${t('fuUnregHead').replace('{n}',num(un.length))}</b> — ${num(Math.round(unL))} ${t('liter')}
+   · ${money(unA)} (${(unA/T.amt*100).toFixed(0)}% ${t('fuOfBill')})<br>${t('fuUnregNote')}</p>`:''}
+
+ <div class="tblwrap"><table class="tbl" id="fuTbl">
+  <thead><tr><th>${t('vehicle')}</th><th>${t('fuTx')}</th><th>${t('liters')}</th>
+   <th>${t('amount')}</th><th>${t('perLiter')}</th><th>${t('fuAvgFill')}</th></tr></thead>
+  <tbody>${R.map(r=>{
+   const o=FU.open===r.id;
+   return`<tr class="fu${r.reg?'':' bad'}" data-act="fuOpen" data-id="${esc(r.id)}" tabindex="0">
+    <td><b>${esc(r.plate)}</b>${r.model?`<small> ${esc(r.model)}${r.type?' · '+esc(r.type):''}</small>`:''}
+     ${r.reg?'':`<span class="tag bad">${t('fuUnreg')}</span>`}
+     <span class="caret">${o?'▾':'▸'}</span></td>
+    <td>${num(r.n)}</td><td>${num(r.ltr.toFixed(2))}</td><td>${money(r.amt)}</td>
+    <td>${r.ltr?(r.amt/r.ltr).toFixed(3):'—'}</td><td>${r.n?(r.ltr/r.n).toFixed(1):'—'}</td></tr>
+   ${o?`<tr class="fudet"><td colspan="6">${fuelDetailHtml(r)}</td></tr>`:''}`}).join('')}
+  </tbody>
+  <tfoot><tr><th>${t('total')}</th><th>${num(T.n)}</th><th>${num(T.ltr.toFixed(2))}</th>
+   <th>${money(T.amt)}</th><th>${T.ltr?(T.amt/T.ltr).toFixed(3):'—'}</th><th></th></tr></tfoot>
+ </table></div>`}
+
+/*  تفصيل مركبة في شهر — يظهر بالضغط على صفها  */
+function fuelDetailHtml(r){
+ if(!r.tx.length)return`<p class="empty">—</p>`;
+ const hasAt=r.tx.some(x=>x.at);
+ if(!hasAt)return`<p class="note">${t('fuSummaryOnly')}</p>`;
+ /* تعبئتان متقاربتان: نعلّم الثانية */
+ const near={};
+ for(let i=1;i<r.tx.length;i++){
+  const a=Date.parse(r.tx[i-1].at),b=Date.parse(r.tx[i].at);
+  if(b-a<=72e5)near[r.tx[i].id]=Math.round((b-a)/6e4)}
+ return`<table class="tbl sub"><thead><tr>
+   <th>${t('date')}</th><th>${t('liters')}</th><th>${t('amount')}</th>
+   <th>${t('fuStation')}</th><th>${t('driver')}</th><th>${t('note')}</th></tr></thead>
+  <tbody>${r.tx.map(x=>`<tr>
+   <td>${x.at?esc(fmtDT(x.at)):'—'}</td><td>${num((+x.ltr).toFixed(2))}</td><td>${money(+x.amt)}</td>
+   <td>${esc(x.station||'—')}</td><td>${esc(x.driver||'—')}</td>
+   <td>${[near[x.id]?`<span class="tag warn">${t('fuNear').replace('{n}',near[x.id])}</span>`:'',
+         (+x.ltr)<3?`<span class="tag warn">${t('fuTiny')}</span>`:'',
+         x.flag&&x.flag!=='لا'&&x.flag.toLowerCase()!=='no'
+           ?`<span class="tag bad">${t('fuVendorFlag')}</span>`:'',
+         x.at&&new Date(x.at).getHours()<5?`<span class="tag">${t('fuNight')}</span>`:'']
+        .filter(Boolean).join(' ')||'—'}</td></tr>`).join('')}</tbody></table>`}
+
+const fmtDT=s=>{const d=new Date(s);return isNaN(d)?'—':
+ String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')
+ +' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+
+/*  تصدير تقرير الوقود لكل المركبات  */
+function fuelExport(){
+ const months=fuelMonths();
+ if(!months.length)return toast(t('expEmpty'));
+ const sheets=[];
+ /* ورقة لكل شهر: صف لكل مركبة */
+ for(const mn of months){
+  const R=fuelRows(mn);
+  sheets.push({name:mn,rows:[[t('vehicle'),t('model'),t('type'),t('fuTx'),t('liters'),
+    t('amount'),t('perLiter'),t('fuAvgFill'),t('fuInReg')],
+   ...R.map(r=>[r.plate,r.model||'',r.type||'',r.n,+r.ltr.toFixed(2),+r.amt.toFixed(2),
+     r.ltr?+(r.amt/r.ltr).toFixed(3):'',r.n?+(r.ltr/r.n).toFixed(1):'',r.reg?t('yes'):t('fuUnreg')])]})}
+ /* ورقة واحدة بكل العمليات */
+ const all=[...(S.fuel||[])].sort((a,b)=>String(a.at||a.month).localeCompare(String(b.at||b.month)));
+ sheets.push({name:t('fuAllTx'),rows:[[t('month'),t('vehicle'),t('date'),t('liters'),t('amount'),
+   t('fuStation'),t('driver'),t('fuProduct'),t('fuInReg')],
+  ...all.map(f=>{const v=f.veh?S.veh.find(x=>x.id===f.veh):null;
+   return [f.month,v?v.plate:f.plate,f.at?fmtDT(f.at):'',+(+f.ltr).toFixed(2),+(+f.amt).toFixed(2),
+    f.station||'',f.driver||'',f.product||'',v?t('yes'):t('fuUnreg')]})]});
+ downloadXLSX((LANG==='en'?'fuel-':'استهلاك-الوقود-')+TODAY+'.xlsx',sheets);
+ toast(t('expDone')+' — '+all.length)}
+
+/*  تقرير الوقود للطباعة — شهرٌ واحد، صفٌّ لكل مركبة  */
+function fuelPdf(){
+ const mn=FU.month||fuelMonths()[0];
+ if(!mn)return toast(t('expEmpty'));
+ const R=fuelRows(mn);
+ if(!R.length)return toast(t('noRowsExport'));
+ const T={n:0,ltr:0,amt:0};R.forEach(r=>{T.n+=r.n;T.ltr+=r.ltr;T.amt+=r.amt});
+ const un=R.filter(r=>!r.reg);
+ const unA=un.reduce((a,r)=>a+r.amt,0);
+ const body=R.map((r,i)=>`<tr${r.reg?'':' class="warnrow"'}>
+   <td>${i+1}</td><td>${esc(r.plate)}</td><td>${esc(r.model||'—')}</td>
+   <td>${num(r.n)}</td><td>${num(r.ltr.toFixed(2))}</td><td>${num(r.amt.toFixed(2))}</td>
+   <td>${r.ltr?(r.amt/r.ltr).toFixed(3):'—'}</td>
+   <td>${r.reg?t('yes'):t('fuUnreg')}</td></tr>`).join('');
+
+ $('#printArea').innerHTML=`
+  <div class="prh">
+   <div><div class="org">${esc(orgTitle())}</div><h1>${t('fuTitle')}</h1></div>
+   <div class="meta">
+    <div><b>${t('monthWord')}:</b> ${esc(mn)}</div>
+    <div><b>${t('fuVehicles')}:</b> ${num(R.length)}</div>
+    <div><b>${t('fuTx')}:</b> ${num(T.n)}</div>
+    <div><b>${t('date')}:</b> ${fmtD(TODAY)}</div></div>
+  </div>
+  ${un.length?`<p style="margin:8px 0;padding:8px;border:1px solid #999">
+    <b>${t('fuUnregHead').replace('{n}',num(un.length))}</b> — ${num(unA.toFixed(2))}
+    (${T.amt?(unA/T.amt*100).toFixed(0):0}% ${t('fuOfBill')})</p>`:''}
+  <table class="pr">
+   <thead><tr><th style="width:26px">#</th><th>${t('vehicle')}</th><th>${t('model')}</th>
+    <th>${t('fuTx')}</th><th>${t('liters')}</th><th>${t('amount')}</th>
+    <th>${t('perLiter')}</th><th>${t('fuInReg')}</th></tr></thead>
+   <tbody>${body}</tbody>
+   <tfoot><tr><td colspan="3">${t('total')}</td><td>${num(T.n)}</td>
+    <td>${num(T.ltr.toFixed(2))}</td><td>${num(T.amt.toFixed(2))}</td>
+    <td>${T.ltr?(T.amt/T.ltr).toFixed(3):'—'}</td><td></td></tr></tfoot>
+  </table>
+  <div class="prsig"><div>${t('preparedBy')}</div><div>${t('reviewedBy')}</div><div>${t('approvedBy')}</div></div>
+  <div class="prf">${esc(orgTitle())} · ${t('version')} ${APP_VERSION}</div>`;
+ setTimeout(()=>window.print(),60)}
 
 function ledgerV(){
  const L=ledger(),tot=L.filter(x=>inMonth(x.date)).reduce((a,x)=>a+x.amount,0);
@@ -2683,7 +3140,7 @@ const VIEWS={
  home:[home,1], employees:[employees,1], vehicles:[vehiclesV,1], renewals:[renewals,'team'],
  leave:[leaveV,1], custody:[custodyV,1], monthly:[monthlyV,'team'], adjust:[adjustV,'team'], fleet:[fleet,'finance'],
  ledger:[ledgerV,'finance'],
- cdocs:[cdocsV,'team'], fleetrep:[fleetReportV,'finance'],
+ cdocs:[cdocsV,'team'], fleetrep:[fleetReportV,'finance'], fuel:[fuelV,'finance'],
  settings:[settings,'manage'], users:[users,'admin']};
 let cur='home';
 function go(v){
@@ -2772,6 +3229,7 @@ const posFields=()=>[{k:'name',l:t('posName'),req:1},
 $('#view').addEventListener('input',e=>{
  if(e.target.id==='q'||e.target.id==='dept'){
   F.q=$('#q').value;F.dept=$('#dept').value;$('#rows').innerHTML=empRows();return}
+ if(e.target.id==='fuMonth'){FU.month=e.target.value;FU.open='';render();return}
  if(e.target.id==='msm'){MS.month=e.target.value||MONTH;render();return}
  if(e.target.id==='msd'){MS.dept=e.target.value;render();return}
  if(e.target.id==='cdq'||e.target.id==='cdc'){
@@ -2995,6 +3453,13 @@ document.addEventListener('click',async e=>{
   goMonthly:()=>go('monthly'),
   exportAdj:()=>exportAdjPdf(),
   exportFleet:()=>exportFleetPdf(),
+  fuel:()=>go('fuel'),
+  fuImport:()=>{if(can('finance'))openFuelImport()},
+  fuExport:()=>{if(can('finance'))fuelExport()},
+  fuPdf:()=>{if(can('finance'))fuelPdf()},
+  fuOpen:()=>{FU.open=(FU.open===id?'':id);render()},
+  undoFuel:()=>{const m=b.dataset.month;
+   if(m){const d=$('#dlg');if(d&&d.open)d.close();undoFuel(m)}},
   postMonth:async()=>{
    const m=MS.month,d=MS.dept;
    if(!d)return toast(t('pickDeptFirst'));
