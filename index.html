@@ -254,6 +254,15 @@ tr.fu.bad td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
 tr.fu .caret{color:var(--ink3);margin-inline-start:6px;font-size:12px}
 tr.fu small{display:block;color:var(--ink3);font-size:12px;font-weight:400}
 tr.fudet>td{padding:0;background:var(--sunk)}
+/* المستوى الشهري داخل صف اللوحة */
+.fumon{padding:10px 14px 14px}
+.fumh{font-size:11.5px;color:var(--ink3);margin:0 0 6px;letter-spacing:.02em}
+table.sub tr.fum{cursor:pointer}
+table.sub tr.fum:hover>td{background:var(--card)}
+table.sub tr.fum.open>td{background:var(--card)}
+table.sub tr.fum.cur>td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
+table.sub tr.futx>td{padding:0;background:var(--card)}
+table.sub tr.futx table.sub td,table.sub tr.futx table.sub th{padding-inline-start:16px}
 /* سجل وقود المركبة داخل بطاقتها — جدول شهري */
 .vfuwrap{overflow-x:auto;margin-top:8px}
 table.vfu{min-width:0;width:100%}
@@ -471,7 +480,7 @@ const BUILT_IN = {
   key: 'sb_publishable__DH_rGvL6-b2xS9G2X-ujg_H2MoIOws'
 };
 
-const APP_VERSION='46';
+const APP_VERSION='48';
 const LOGO='data:image/png;base64,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';
 
 /* ───────── أدوات عامة ───────── */
@@ -646,6 +655,17 @@ const AR={
  copyFailed:'تعذر النسخ', menu:'القائمة',
  impBtn:'استيراد من إكسل', impRun:'استيراد',
  month:'الشهر', note:'ملاحظات',
+ pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
+ pushTestBtn:'إشعار تجريبي', pushOnWord:'مفعّلة',
+ pushStateOn:'هذا الجهاز يستقبل التنبيهات', pushStateOff:'هذا الجهاز لا يستقبل شيئاً',
+ pushHint:'تنبيه على شاشة القفل قبل انتهاء الإقامات والوثائق والاستمارات — بحسب صلاحيتك. التفعيل لكل جهاز على حدة.',
+ pushOn:'فُعّلت الإشعارات على هذا الجهاز', pushOff:'أُوقفت الإشعارات على هذا الجهاز',
+ pushFailed:'تعذّر تفعيل الإشعارات', pushEnableFirst:'فعّل الإشعارات أولاً',
+ pushDenied:'الإشعارات محجوبة في إعدادات المتصفح لهذا الموقع — اسمح بها ثم أعد المحاولة.',
+ pushNoSupport:'هذا المتصفح لا يدعم إشعارات الويب.',
+ pushNoKey:'الإشعارات غير مهيّأة بعد — ينقص مفتاح الخدمة العام.',
+ pushIosInstall:'على الآيفون: ثبّت البرنامج على الشاشة الرئيسية أولاً، ثم افتحه من أيقونته وفعّل الإشعارات من هناك.',
+ pushTestTitle:'تجربة — نظام الفلك', pushTestBody:'وصلك هذا الإشعار، فالجهاز جاهز.',
  fuTitle:'استهلاك الوقود', fuSub:'سجل شهري لكل مركبة — اضغط الصف لترى تفاصيل تعبئاته',
  fuImport:'استيراد استهلاك الوقود', fuRun:'استيراد', fuPick:'اختر تقرير الدريس (xlsx أو CSV)',
  fuHint:'يقرأ تقرير الدريس بصيغتيه: التفصيلي (سطر لكل تعبئة) والملخص الشهري (سطر لكل مركبة). ارفع الملف كما نزّلته — لا تعدّل فيه.',
@@ -667,6 +687,7 @@ const AR={
  fuOfBill:'من الفاتورة', fuNear:'بعد السابقة بـ{n} دقيقة', fuTiny:'تعبئة ضئيلة', fuNight:'تعبئة ليلية',
  fuSummaryOnly:'هذا الشهر مستورد من الملخص الشهري — لا تفاصيل لعملياته. استورد التقرير التفصيلي لتراها.',
  fuVendorFlag:'علامة الدريس', fuSeeAll:'السجل كاملاً', fuMonthsWord:'شهراً',
+ fuByMonth:'استهلاك هذه اللوحة شهراً بشهر — اضغط الشهر لترى تعبئاته',
  fuShow:'سجل الوقود', fuHide:'إخفاء السجل',
  fuNoneForVeh:'لا تعبئات مسجّلة لهذه المركبة',
  fuMoreMonths:'و{n} شهراً أقدم — في السجل الكامل', fuAllTx:'كل العمليات', liter:'لتر', liters:'اللترات', perLiter:'ريال/لتر', undo:'تراجع',
@@ -896,6 +917,17 @@ const EN={
  copyFailed:'Could not copy', menu:'Menu',
  impBtn:'Import from Excel', impRun:'Import',
  month:'Month', note:'Notes',
+ pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
+ pushTestBtn:'Test notification', pushOnWord:'On',
+ pushStateOn:'This device receives alerts', pushStateOff:'This device receives nothing',
+ pushHint:'Lock-screen alerts before iqamas, documents and registrations expire — scoped to your role. Enable on each device separately.',
+ pushOn:'Notifications enabled on this device', pushOff:'Notifications turned off on this device',
+ pushFailed:'Could not enable notifications', pushEnableFirst:'Enable notifications first',
+ pushDenied:'Notifications are blocked for this site in your browser settings — allow them and try again.',
+ pushNoSupport:'This browser does not support web notifications.',
+ pushNoKey:'Notifications are not configured yet — the public server key is missing.',
+ pushIosInstall:'On iPhone: install the app to the Home Screen first, then open it from its icon and enable notifications there.',
+ pushTestTitle:'Test — Al Falak system', pushTestBody:'You received this, so the device is ready.',
  fuTitle:'Fuel usage', fuSub:'A monthly record per vehicle — tap a row for its fill-ups',
  fuImport:'Import fuel usage', fuRun:'Import', fuPick:'Choose the Aldrees report (xlsx or CSV)',
  fuHint:'Reads both Aldrees formats: the detailed report (one row per fill-up) and the monthly summary (one row per vehicle). Upload the file as downloaded — do not edit it.',
@@ -917,6 +949,7 @@ const EN={
  fuOfBill:'of the bill', fuNear:'{n} min after the previous', fuTiny:'Tiny fill', fuNight:'Night fill',
  fuSummaryOnly:'This month was imported from the monthly summary — it has no per-transaction detail. Import the detailed report to see it.',
  fuVendorFlag:'Vendor flag', fuSeeAll:'Full record', fuMonthsWord:'months',
+ fuByMonth:'This plate month by month — tap a month for its fill-ups',
  fuShow:'Fuel record', fuHide:'Hide record',
  fuNoneForVeh:'No fill-ups recorded for this vehicle',
  fuMoreMonths:'and {n} older months — in the full record', fuAllTx:'All transactions', liter:'L', liters:'Litres', perLiter:'SAR/L', undo:'Undo',
@@ -3035,7 +3068,7 @@ const plateKey=p=>{const s=enDig(p).replace(/[أإآٱ]/g,'ا').replace(/ة/g,'�
  return (s.match(/\d/g)||[]).join('')+'|'+(s.match(/[ء-ي]/g)||[]).join('')};
 const vehByPlate=p=>{const k=plateKey(p);return S.veh.find(v=>plateKey(v.plate)===k)};
 
-let FU={month:'',open:''};          /* الشهر المعروض، والصف المفتوح */
+let FU={month:'',open:'',openM:''};  /* الشهر المعروض، وصف اللوحة المفتوح، والشهر المفتوح داخله */
 
 function fuelMonths(){
  const m={};
@@ -3110,16 +3143,48 @@ function fuelV(){
    <th>${money(T.amt)}</th><th>${T.ltr?(T.amt/T.ltr).toFixed(3):'—'}</th><th></th></tr></tfoot>
  </table></div>`}
 
-/*  تفصيل مركبة في شهر — يظهر بالضغط على صفها  */
+/*  فتح صف اللوحة: أشهرها كلها أولاً، لا الشهر المختار وحده.
+    فالصف يقول «أكتوبر» والفتح يقول «وقبله سبتمبر وأغسطس» —
+    وهذا ما يكشف القفزة. وكل شهر يُفتح على تعبئاته.           */
 function fuelDetailHtml(r){
- if(!r.tx.length)return`<p class="empty">—</p>`;
- const hasAt=r.tx.some(x=>x.at);
- if(!hasAt)return`<p class="note">${t('fuSummaryOnly')}</p>`;
+ const all=(S.fuel||[]).filter(f=>(f.veh||('?'+f.plate))===r.id);
+ if(!all.length)return`<p class="empty">—</p>`;
+
+ const by={};
+ for(const f of all){
+  const m=by[f.month]||(by[f.month]={m:f.month,n:0,ltr:0,amt:0,tx:[]});
+  m.n++;m.ltr+=+f.ltr||0;m.amt+=+f.amt||0;m.tx.push(f)}
+ const M=Object.values(by).sort((a,b)=>String(b.m).localeCompare(String(a.m)));
+ M.forEach(x=>x.tx.sort((a,b)=>String(a.at||'').localeCompare(String(b.at||''))));
+ const T={n:0,ltr:0,amt:0};M.forEach(x=>{T.n+=x.n;T.ltr+=x.ltr;T.amt+=x.amt});
+
+ return`<div class="fumon">
+  <div class="fumh">${t('fuByMonth')}</div>
+  <table class="tbl sub"><thead><tr>
+    <th>${t('month')}</th><th>${t('fuTx')}</th><th>${t('liters')}</th>
+    <th>${t('amount')}</th><th>${t('perLiter')}</th></tr></thead>
+   <tbody>${M.map(x=>{
+    const k=r.id+'|'+x.m, o=FU.openM===k;
+    return`<tr class="fum${o?' open':''}${x.m===FU.month?' cur':''}"
+      data-act="fuMonthOpen" data-k="${esc(k)}" tabindex="0">
+     <td><b dir="auto">${esc(x.m)}</b> <span class="caret">${o?'▾':'▸'}</span></td>
+     <td>${num(x.n)}</td><td>${num(x.ltr.toFixed(2))}</td><td>${money(x.amt)}</td>
+     <td>${x.ltr?(x.amt/x.ltr).toFixed(3):'—'}</td></tr>
+    ${o?`<tr class="futx"><td colspan="5">${fuelTxHtml(x.tx)}</td></tr>`:''}`}).join('')}</tbody>
+   <tfoot><tr><th>${t('total')}</th><th>${num(T.n)}</th><th>${num(T.ltr.toFixed(2))}</th>
+    <th>${money(T.amt)}</th><th>${T.ltr?(T.amt/T.ltr).toFixed(3):'—'}</th></tr></tfoot>
+  </table></div>`}
+
+/*  تعبئات شهر واحد  */
+function fuelTxHtml(tx){
+ if(!tx.length)return`<p class="empty">—</p>`;
+ if(!tx.some(x=>x.at))return`<p class="note">${t('fuSummaryOnly')}</p>`;
  /* تعبئتان متقاربتان: نعلّم الثانية */
  const near={};
- for(let i=1;i<r.tx.length;i++){
-  const a=Date.parse(r.tx[i-1].at),b=Date.parse(r.tx[i].at);
-  if(b-a<=72e5)near[r.tx[i].id]=Math.round((b-a)/6e4)}
+ for(let i=1;i<tx.length;i++){
+  const a=Date.parse(tx[i-1].at),b=Date.parse(tx[i].at);
+  if(b-a<=72e5)near[tx[i].id]=Math.round((b-a)/6e4)}
+ const r={tx};
  return`<table class="tbl sub"><thead><tr>
    <th>${t('date')}</th><th>${t('liters')}</th><th>${t('amount')}</th>
    <th>${t('fuStation')}</th><th>${t('driver')}</th><th>${t('note')}</th></tr></thead>
@@ -3212,6 +3277,106 @@ function ledgerV(){
  </tbody></table></div>`}
 
 /* ---------- الإعدادات ---------- */
+/* ═══════════════ إشعارات الجوال ═══════════════
+   تعمل على الأندرويد في المتصفح مباشرةً، وعلى الآيفون بشرط
+   تثبيت البرنامج على الشاشة الرئيسية (iOS 16.4 فأحدث).
+   المفتاح هنا عامّ — السرّي لا يغادر خوادم Supabase.          */
+
+const VAPID_PUBLIC='';   /* ← ضع هنا المفتاح العام من الدالة */
+
+let PUSH={state:'unknown',sub:null,busy:false};
+
+const pushSupported=()=>'serviceWorker'in navigator&&'PushManager'in window
+ &&'Notification'in window;
+const isStandaloneApp=()=>window.matchMedia('(display-mode: standalone)').matches
+ ||window.navigator.standalone===true;
+const iOSDevice=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)
+ ||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+
+/*  لماذا لا تعمل الإشعارات هنا؟ سببٌ واحد واضح بدل رسالة عامة  */
+function pushBlocker(){
+ if(!VAPID_PUBLIC)              return 'pushNoKey';
+ if(iOSDevice()&&!isStandaloneApp()) return 'pushIosInstall';
+ if(!pushSupported())           return 'pushNoSupport';
+ if(Notification.permission==='denied') return 'pushDenied';
+ return ''}
+
+const b64ToU8=b64=>{
+ const pad='='.repeat((4-b64.length%4)%4);
+ const raw=atob((b64+pad).replace(/-/g,'+').replace(/_/g,'/'));
+ return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)))};
+const u8ToB64=buf=>btoa(String.fromCharCode(...new Uint8Array(buf)))
+ .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+
+async function pushRefresh(){
+ PUSH.sub=null;
+ PUSH.state=pushBlocker()||'off';
+ if(PUSH.state!=='off')return PUSH.state;
+ try{
+  const reg=await navigator.serviceWorker.ready;
+  const sub=await reg.pushManager.getSubscription();
+  if(sub){PUSH.sub=sub;PUSH.state='on'}
+ }catch(e){}
+ return PUSH.state}
+
+async function pushEnable(){
+ const why=pushBlocker();
+ if(why)return toast(t(why));
+ PUSH.busy=true;render();
+ try{
+  const perm=await Notification.requestPermission();
+  if(perm!=='granted'){PUSH.busy=false;await pushRefresh();render();return toast(t('pushDenied'))}
+  const reg=await navigator.serviceWorker.ready;
+  let sub=await reg.pushManager.getSubscription();
+  if(!sub)sub=await reg.pushManager.subscribe(
+    {userVisibleOnly:true,applicationServerKey:b64ToU8(VAPID_PUBLIC)});
+  const j=sub.toJSON();
+  const r=await api.rpc('save_push_sub',{p_endpoint:sub.endpoint,
+    p_p256dh:j.keys&&j.keys.p256dh,p_auth:j.keys&&j.keys.auth,
+    p_ua:navigator.userAgent});
+  const code=Array.isArray(r)?r[0]:r;
+  if(code!=='ok')throw new Error(String(code||t('saveFailed')));
+  PUSH.sub=sub;PUSH.state='on';
+  toast(t('pushOn'))}
+ catch(ex){toast(ex.message||t('pushFailed'))}
+ finally{PUSH.busy=false;render()}}
+
+async function pushDisable(){
+ PUSH.busy=true;render();
+ try{
+  const reg=await navigator.serviceWorker.ready;
+  const sub=await reg.pushManager.getSubscription();
+  if(sub){await api.rpc('drop_push_sub',{p_endpoint:sub.endpoint});
+   await sub.unsubscribe()}
+  PUSH.sub=null;PUSH.state='off';
+  toast(t('pushOff'))}
+ catch(ex){toast(ex.message||t('pushFailed'))}
+ finally{PUSH.busy=false;render()}}
+
+/*  إشعار تجريبي محلي — يثبت أن الجهاز يعرضها قبل انتظار التنبيه الحقيقي  */
+async function pushTest(){
+ if(PUSH.state!=='on')return toast(t('pushEnableFirst'));
+ try{
+  const reg=await navigator.serviceWorker.ready;
+  await reg.showNotification(t('pushTestTitle'),
+   {body:t('pushTestBody'),tag:'test',dir:'auto',lang:LANG});
+ }catch(e){toast(e.message)}}
+
+/*  بطاقة الإشعارات في الإعدادات  */
+function pushCard(){
+ const why=pushBlocker();
+ const on=PUSH.state==='on';
+ return`<article class="card"><div class="row"><span class="av ic">${ico('bell')}</span>
+   <div style="flex:1;min-width:0"><div class="ttl">${t('pushTitle')}</div>
+    <div class="sub">${on?t('pushStateOn'):t('pushStateOff')}</div></div>
+   ${on?`<span class="tag ok">${t('pushOnWord')}</span>`:''}</div>
+  <p class="note">${why?t(why):t('pushHint')}</p>
+  <div class="foot">${why?''
+   :on?`<button class="btn sm" data-act="pushTest">${t('pushTestBtn')}</button>
+        <button class="lnk danger" data-act="pushOff">${t('pushOffBtn')}</button>`
+      :`<button class="btn gold sm" data-act="pushOn" ${PUSH.busy?'disabled':''}>${t('pushOnBtn')}</button>`}
+  </div></article>`}
+
 function settings(){
  const list=(tb,rows,label,icon)=>`<article class="card">
   <div class="row"><span class="av ic">${ico(icon)}</span>
@@ -3236,7 +3401,7 @@ function settings(){
   <p class="note">${t('bkHint')}</p>
   <div class="foot"><button class="btn gold sm" data-act="bkAll">${t('bkBtn')}</button></div></article>`:'';
  return`<div class="pagehead"><div><h1>${t('settings')}</h1><p>${t('basicsSub')}</p></div></div>
- <div class="grid g-auto">${org}${pos}${list('departments',S.departments,t('depts'),'people')}${list('projects',S.projects,t('projs'),'build')}${bk}</div>
+ <div class="grid g-auto">${org}${pos}${list('departments',S.departments,t('depts'),'people')}${list('projects',S.projects,t('projs'),'build')}${bk}${pushCard()}</div>
  <p class="note">${t('rolesNote')}</p>`}
 
 let ACC=null;                       /* كشف حسابات الدخول — يُقرأ عند الطلب */
@@ -3348,7 +3513,7 @@ $('#frm').addEventListener('submit',async e=>{e.preventDefault();
  finally{btn.disabled=false;busy(false)}});
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$('#dlg').close()));
 
-async function refreshAll(){busy(true);try{await load();render()}catch(e){toast(e.message)}finally{busy(false)}}
+async function refreshAll(){busy(true);try{await load();render();gotoFromHash()}catch(e){toast(e.message)}finally{busy(false)}}
 
 /* حقول النماذج */
 const optEmp=()=>S.emp.map(e=>[e.id,e.name]);
@@ -3447,6 +3612,9 @@ document.addEventListener('click',async e=>{
   expVeh:()=>{if(can('manage'))exportKind('veh')},
   expCdoc:()=>{if(can('finance'))exportKind('cdoc')},
   bkAll:()=>{if(can('finance'))exportBackup()},
+  pushOn:()=>pushEnable(),
+  pushOff:()=>pushDisable(),
+  pushTest:()=>pushTest(),
   undoImp:async()=>{const el=$('#dlg');if(el&&el.open)el.close();await undoImport(id)},
   viewRcp:async()=>{try{busy(true);const u=await receiptLink(b.dataset.path);window.open(u,'_blank','noopener')}
    catch(ex){toast(ex.message)}finally{busy(false)}},
@@ -3633,7 +3801,8 @@ document.addEventListener('click',async e=>{
   fuImport:()=>{if(can('finance'))openFuelImport()},
   fuExport:()=>{if(can('finance'))fuelExport()},
   fuPdf:()=>{if(can('finance'))fuelPdf()},
-  fuOpen:()=>{FU.open=(FU.open===id?'':id);render()},
+  fuOpen:()=>{FU.open=(FU.open===id?'':id);FU.openM='';render()},
+  fuMonthOpen:()=>{const k=b.dataset.k;FU.openM=(FU.openM===k?'':k);render()},
   vfuOpen:()=>{const k=b.dataset.k;VFU=(VFU===k?'':k);
    /* الجدول داخل النافذة، فنُعيد رسم النافذة لا الصفحة */
    if($('#dlg').open)paintVehFuel();else render()},
@@ -3742,7 +3911,18 @@ window.addEventListener('hashchange',()=>{
  else if(location.hash==='#first')firstRunScreen()});
 
 if('serviceWorker'in navigator)window.addEventListener('load',()=>{
- navigator.serviceWorker.register('sw.js').catch(()=>{})});
+ navigator.serviceWorker.register('sw.js')
+  .then(()=>pushRefresh().then(()=>{if(me&&S)render()}))
+  .catch(()=>{});
+ /*  الضغط على إشعار ونافذة البرنامج مفتوحة: ننتقل للشاشة المعنيّة  */
+ navigator.serviceWorker.addEventListener('message',ev=>{
+  const d=ev.data||{};
+  if(d.type==='goto'&&d.view&&me&&S&&VIEWS[d.view])go(d.view)})});
+
+/*  أو فُتح البرنامج من الإشعار بعنوانٍ فيه #شاشة  */
+function gotoFromHash(){
+ const v=(location.hash||'').replace(/^#/,'');
+ if(v&&VIEWS[v]&&me&&S){go(v);history.replaceState(null,'',location.pathname+location.search)}}
 </script>
 </body>
 </html>
