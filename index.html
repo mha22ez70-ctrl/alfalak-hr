@@ -723,6 +723,8 @@ const AR={
  pwColumn:'كلمة المرور', pwResetHint:'لإعادة تعيينها: ألغِ الحساب ثم فعّل الدخول من جديد.',
  pwOutBtn:'تسجيل الخروج', myAccount:'حسابي', employer:'صاحب العمل', employers:'أصحاب العمل',
  uploadType:'نوع الملف غير مقبول — الصور وملفات PDF فقط.', waitMsg:'جارٍ التحميل…',
+ lvRecord:'سجل الإجازات', lvNoneForEmp:'لا إجازات مسجّلة لهذا الموظف.',
+ lvCount:'عدد الإجازات', lvDaysApproved:'الأيام المعتمدة', lvApprovedByType:'المعتمد هذه السنة:', lvYear:'السنة', lvDaysWord:'الأيام',
  pwChangedOn:'آخر تغيير: {d}', pwNeverChanged:'لم تُغيَّر بعد',
  pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
  pushTestBtn:'إشعار تجريبي', pushOnWord:'مفعّلة',
@@ -1001,6 +1003,8 @@ const EN={
  pwColumn:'Password', pwResetHint:'To reset: cancel the account, then activate the login again.',
  pwOutBtn:'Sign out', myAccount:'My account', employer:'Employer', employers:'Employers',
  uploadType:'File type not accepted — images and PDF only.', waitMsg:'Loading…',
+ lvRecord:'Leave record', lvNoneForEmp:'No leave recorded for this employee.',
+ lvCount:'Requests', lvDaysApproved:'Approved days', lvApprovedByType:'Approved this year:', lvYear:'Year', lvDaysWord:'Days',
  pwChangedOn:'Last changed: {d}', pwNeverChanged:'Not changed yet',
  pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
  pushTestBtn:'Test notification', pushOnWord:'On',
@@ -2745,11 +2749,74 @@ function empRows(){
     [t('vehicle'),v?esc(v.plate):'<span class="muted">—</span>']]
    .concat(can('admin')?[[t('role'),e.position_id?esc(roleName(posRole(e.position_id))):'<span class="muted">—</span>'],
      [t('loginAccess'),has?`<span class="tag ok">${t('loginOn')}</span>`:`<span class="tag">${t('loginOff')}</span>`]]:[]))}
-  ${can('manage')?`<div class="foot">
+  <div class="foot">
+    <button class="lnk" data-act="elvOpen" data-id="${e.id}">${t('lvRecord')}</button>
+    ${can('manage')?`
     ${can('admin')&&e.nid&&!has?`<button class="btn gold sm" data-act="mkLogin" data-id="${e.id}">${t('enableLogin')}</button>`:''}
     ${can('admin')&&has?`<button class="lnk danger" data-act="rmLogin" data-id="${e.id}">${t('disableLogin')}</button>`:''}
     <button class="lnk" data-act="editEmp" data-id="${e.id}">${t('edit')}</button>
-    <button class="lnk danger" data-act="delEmp" data-id="${e.id}">${t('del')}</button></div>`:''}</article>`}).join('')}
+    <button class="lnk danger" data-act="delEmp" data-id="${e.id}">${t('del')}</button>`:''}</div></article>`}).join('')}
+
+/*  سجل إجازات موظف واحد — سنةٌ في كل سطر، وبالضغط تفاصيلها.
+    ما يظهر هنا هو ما تُرجعه القاعدة أصلاً: الموظف لا يرى إلا
+    إجازاته، ومدير القسم إلا قسمه. فالحجب في القاعدة لا في الشاشة. */
+let LVE='';     /* أي موظف فُتح سجله */
+let LVY='';     /* أي سنة مفتوحة — "موظف|سنة" */
+
+function empLeaveTable(eid){
+ const L=(S.leave||[]).filter(l=>l.emp===eid);
+ if(!L.length)return`<p class="empty">${t('lvNoneForEmp')}</p>`;
+ const by={};
+ for(const l of L){
+  const y=String(l.from||'').slice(0,4)||'—';
+  const g=by[y]||(by[y]={y,n:0,days:0,rows:[]});
+  g.n++;
+  if(l.status==='معتمدة')g.days+=dur(l);
+  g.rows.push(l)}
+ const Y=Object.values(by).sort((a,b)=>String(b.y).localeCompare(String(a.y)));
+ const ord={'معلقة':0,'معتمدة':1,'مرفوضة':2};
+ Y.forEach(g=>g.rows.sort((a,b)=>String(b.from).localeCompare(String(a.from))||ord[a.status]-ord[b.status]));
+ const T={n:0,days:0};Y.forEach(g=>{T.n+=g.n;T.days+=g.days});
+ return`<div class="wide"><div class="vfuwrap"><table class="vfu">
+   <thead><tr><th>${t('lvYear')}</th><th>${t('lvCount')}</th><th>${t('lvDaysApproved')}</th></tr></thead>
+   <tbody>${Y.map(g=>{
+    const k=eid+'|'+g.y, open=LVY===k;
+    return`<tr class="vfum${open?' open':''}" data-act="lvyOpen" data-k="${esc(k)}" tabindex="0">
+     <td><b dir="auto">${esc(g.y)}</b> <em class="caret">${open?'▾':'▸'}</em></td>
+     <td>${num(g.n)}</td>
+     <td>${num(g.days)}</td></tr>
+    ${open?`<tr class="vfudet"><td colspan="3">${lvYearHtml(g)}</td></tr>`:''}`}).join('')}</tbody>
+   <tfoot><tr><td><b>${t('total')}</b></td>
+    <td><b>${num(T.n)}</b></td><td><b>${num(T.days)}</b></td></tr></tfoot></table></div></div>`}
+
+/*  تفاصيل سنةٍ واحدة، ومعها حصيلة كل نوع — وهو السؤال الذي
+    يُسأل فعلاً: كم يوماً مرضياً أخذ هذا الموظف هذه السنة؟      */
+function lvYearHtml(g){
+ const byType={};
+ for(const l of g.rows)if(l.status==='معتمدة')byType[l.type]=(byType[l.type]||0)+dur(l);
+ const chips=Object.keys(byType).map(k=>
+   `<span class="tag">${esc(ev(k))}: ${num(byType[k])}</span>`).join(' ');
+ return`<div class="subwrap"><table class="sub"><thead><tr>
+   <th>${t('leaveType')}</th><th>${t('from')}</th><th>${t('to')}</th>
+   <th>${t('lvDaysWord')}</th><th>${t('status')}</th><th>${t('note')}</th></tr></thead>
+  <tbody>${g.rows.map(l=>`<tr>
+    <td>${esc(ev(l.type))}</td><td>${fmtD(l.from)}</td><td>${fmtD(l.to)}</td>
+    <td>${num(dur(l))}</td>
+    <td><span class="tag ${l.status==='معتمدة'?'ok':l.status==='مرفوضة'?'bad':'warn'}">${esc(ev(l.status))}</span></td>
+    <td>${esc(l.note)||'<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table>
+  ${chips?`<p class="note" style="margin:9px 0 0">${t('lvApprovedByType')} ${chips}</p>`:''}</div>`}
+
+function openEmpLeave(eid){
+ const e=S.emp.find(x=>x.id===eid);if(!e)return;
+ LVE=eid;LVY='';
+ $('#dlgTitle').textContent=t('lvRecord')+' — '+e.name;
+ $('#dlgSave').hidden=true;
+ onSave=null;                       /* نافذة عرض لا حفظ فيها */
+ $('#dlg').classList.add('wideDlg');
+ paintEmpLeave();
+ $('#dlg').showModal()}
+
+function paintEmpLeave(){$('#fields').innerHTML=empLeaveTable(LVE)}
 
 /* ---------- المركبات ---------- */
 /*  سجل استهلاك الوقود داخل بطاقة المركبة — شهرٌ في كل سطر.
@@ -3269,7 +3336,7 @@ function leaveV(){
     <div style="flex:1;min-width:0"><div class="ttl">${esc(empName(l.emp))}</div>
      <div class="sub">${esc(ev(l.type))} ${t('leaveWord')}</div></div>
     <span class="tag ${l.status==='معتمدة'?'ok':l.status==='مرفوضة'?'bad':'warn'}">${esc(ev(l.status))}</span></div>
-   ${kv([[t('from'),fmtD(l.from)],[t('to'),fmtD(l.to)],[t('days'),num(dur(l))]])}
+   ${kv([[t('from'),fmtD(l.from)],[t('to'),fmtD(l.to)],[t('lvDaysWord'),num(dur(l))]])}
    ${l.note?`<p class="note">${esc(l.note)}</p>`:''}
    <div class="foot">
     ${l.status==='معلقة'&&can('approve')?`<button class="btn gold sm" data-act="approve" data-id="${l.id}">${t('approve')}</button>
@@ -4091,6 +4158,9 @@ document.addEventListener('click',async e=>{
    /* الجدول داخل النافذة، فنُعيد رسم النافذة لا الصفحة */
    if($('#dlg').open)paintVehFuel();else render()},
   vfcOpen:()=>{if(can('fuel'))openVehFuel(id)},
+  elvOpen:()=>openEmpLeave(id),
+  lvyOpen:()=>{const k=b.dataset.k;LVY=(LVY===k?'':k);
+   if($('#dlg').open)paintEmpLeave();else render()},
   undoFuel:()=>{const m=b.dataset.month;
    if(m){const d=$('#dlg');if(d&&d.open)d.close();undoFuel(m)}},
   postMonth:async()=>{
