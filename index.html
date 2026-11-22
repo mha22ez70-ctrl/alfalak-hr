@@ -699,6 +699,7 @@ const AR={
  pwChangeBtn:'تغيير كلمة المرور', pwTemp:'يدخل برقم الهوية', pwOwn:'كلمة خاصة',
  pwColumn:'كلمة المرور', pwResetHint:'لإعادة تعيينها: ألغِ الحساب ثم فعّل الدخول من جديد.',
  pwOutBtn:'تسجيل الخروج', myAccount:'حسابي', employer:'صاحب العمل', employers:'أصحاب العمل',
+ uploadType:'نوع الملف غير مقبول — الصور وملفات PDF فقط.',
  pwChangedOn:'آخر تغيير: {d}', pwNeverChanged:'لم تُغيَّر بعد',
  pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
  pushTestBtn:'إشعار تجريبي', pushOnWord:'مفعّلة',
@@ -976,6 +977,7 @@ const EN={
  pwChangeBtn:'Change password', pwTemp:'Signs in with national ID', pwOwn:'Own password',
  pwColumn:'Password', pwResetHint:'To reset: cancel the account, then activate the login again.',
  pwOutBtn:'Sign out', myAccount:'My account', employer:'Employer', employers:'Employers',
+ uploadType:'File type not accepted — images and PDF only.',
  pwChangedOn:'Last changed: {d}', pwNeverChanged:'Not changed yet',
  pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
  pushTestBtn:'Test notification', pushOnWord:'On',
@@ -1174,11 +1176,25 @@ const api={
  del:(tb,id)=>rest(tb+'?id=eq.'+id,{method:'DELETE'}),
  rpc:(fn,args)=>rest('rpc/'+fn,{method:'POST',body:JSON.stringify(args||{})})};
 
+/*  الامتداد ونوع المحتوى يُقرّرهما البرنامج لا اسم الملف.
+    كان الامتداد يُؤخذ من اسم الملف كما هو، ومعه نوعه كما أعلنه
+    المتصفح. ففي ذلك بابان:
+      ـ محرف ? أو # في الاسم يقطع المسار فيُحفظ الملف باسم غير
+        الذي سُجّل في القاعدة، فينكسر الرابط بلا أثر يدلّ عليه.
+      ـ وملف svg أو html يُحفظ بنوعه فيُنفَّذ ما فيه من شيفرة حين
+        يفتحه المحاسب برابطه الموقَّع. لا يصل إلى جلسته — النطاق
+        مختلف — لكنه يُنفَّذ على نطاق يثق به.
+    فنقبل ستة امتدادات، ونفرض نوع المحتوى من عندنا.             */
+const UP_OK={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',
+ webp:'image/webp',heic:'image/heic',pdf:'application/pdf'};
+
 async function uploadReceipt(file){
- const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+ const raw=(String(file.name||'').split('.').pop()||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+ const ext=UP_OK[raw]?raw:'';
+ if(!ext)throw new Error(t('uploadType'));
  const path=TODAY+'/'+Math.random().toString(36).slice(2,10)+'.'+ext;
  const r=await fetch(base()+'/storage/v1/object/receipts/'+path,{method:'POST',
-  headers:headers({'Content-Type':file.type||'application/octet-stream','x-upsert':'true'}),body:file});
+  headers:headers({'Content-Type':UP_OK[ext],'x-upsert':'true'}),body:file});
  if(!r.ok)throw new Error(t('uploadFailed'));
  return path}
 
@@ -3694,7 +3710,7 @@ function openForm(title,fields,data,save){
   if(f.opt)return`<label for="${id}"${cls}>${f.l}<select id="${id}" name="${f.k}">${f.opt.map(o=>{
    const[val,txt]=Array.isArray(o)?o:[o,o];
    return`<option value="${esc(val)}" ${String(val)===String(v)?'selected':''}>${esc(txt)}</option>`}).join('')}</select></label>`;
-  if(f.t==='file')return`<label for="${id}"${cls}>${f.l}<input id="${id}" name="${f.k}" type="file" accept="image/*,.pdf" capture="environment"></label>`;
+  if(f.t==='file')return`<label for="${id}"${cls}>${f.l}<input id="${id}" name="${f.k}" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.pdf,image/jpeg,image/png,image/webp,image/heic,application/pdf" capture="environment"></label>`;
   return`<label for="${id}"${cls}>${f.l}<input id="${id}" name="${f.k}" type="${f.t||'text'}" value="${esc(v)}" ${f.req?'required':''} ${f.t==='number'?'min="0" step="any" inputmode="decimal"':''}></label>`}).join('');
  $('#dlgSave').hidden=false;$('#dlgSave').textContent=t('save');$('#dlgSave').disabled=false;
  onSave=save;$('#dlg').showModal()}
