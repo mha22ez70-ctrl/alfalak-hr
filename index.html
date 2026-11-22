@@ -63,6 +63,26 @@ h1,h2,h3{font-family:var(--fd);font-weight:600;margin:0;text-wrap:balance}
 #busy{position:fixed;inset-inline:0;top:0;height:2px;background:var(--gold2);
   transform:scaleX(0);transform-origin:100% 50%;transition:transform .3s;z-index:60}
 #busy.on{transform:scaleX(1)}
+
+/* ═══════ طبقة الانتظار بالشعار ═══════
+   لا تظهر إلا بعد ٤٠٠ ملي من انشغال متّصل، فالعملية السريعة لا
+   تُومض شيئاً. وإن ظهرت بقيت نصف ثانية على الأقل، فلا ترتجف.    */
+#wait{position:fixed;inset:0;z-index:65;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--paper) 74%,transparent);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .22s}
+#wait.on{opacity:1;pointer-events:auto}
+#wait .wbox{display:flex;flex-direction:column;align-items:center;gap:13px}
+#wait img{width:52px;height:auto;animation:wpulse 1.5s ease-in-out infinite}
+#wait .wtxt{font-size:13px;color:var(--ink2);letter-spacing:.01em}
+#wait .wbar{width:112px;height:3px;border-radius:2px;background:var(--line);overflow:hidden}
+#wait .wbar i{display:block;height:100%;width:38%;border-radius:2px;background:var(--gold2);
+  animation:wslide 1.15s ease-in-out infinite}
+@keyframes wpulse{0%,100%{opacity:.5;transform:scale(.95)}50%{opacity:1;transform:scale(1)}}
+@keyframes wslide{0%{transform:translateX(-130%)}100%{transform:translateX(330%)}}
+@media (prefers-reduced-motion:reduce){
+  #wait img,#wait .wbar i{animation:none}
+  #wait img{opacity:1}#wait .wbar i{width:100%}}
 #toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;
   transform:translate(-50%,16px);background:var(--ink);color:var(--paper);
   padding:11px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;
@@ -401,7 +421,7 @@ table.cdt .more{font-style:normal;color:var(--ink3);font-size:11px;margin-inline
 @media print{
   @page{size:A4;margin:14mm 12mm}
   body{background:#fff!important;color:#000!important}
-  #app,#gate,#busy,#toast,#installBar,dialog,.topbar,.side,.scrim{display:none!important}
+  #app,#gate,#busy,#wait,#toast,#installBar,dialog,.topbar,.side,.scrim{display:none!important}
   #printArea{display:block!important;font-family:'IBM Plex Sans Arabic',sans-serif;color:#000}
   #printArea *{color:#000!important}
   .prh{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
@@ -451,6 +471,9 @@ table.cdt .more{font-style:normal;color:var(--ink3);font-size:11px;margin-inline
   <noscript><p class="sp-ns">هذا البرنامج يحتاج تشغيل جافاسكربت.</p></noscript>
 </div>
 <div id="busy"></div>
+<div id="wait" role="status" aria-live="polite" aria-hidden="true">
+  <div class="wbox"><img alt=""><div class="wtxt"></div><div class="wbar"><i></i></div></div>
+</div>
 <div id="gate" class="gate"></div>
 
 <div id="app" hidden>
@@ -699,7 +722,7 @@ const AR={
  pwChangeBtn:'تغيير كلمة المرور', pwTemp:'يدخل برقم الهوية', pwOwn:'كلمة خاصة',
  pwColumn:'كلمة المرور', pwResetHint:'لإعادة تعيينها: ألغِ الحساب ثم فعّل الدخول من جديد.',
  pwOutBtn:'تسجيل الخروج', myAccount:'حسابي', employer:'صاحب العمل', employers:'أصحاب العمل',
- uploadType:'نوع الملف غير مقبول — الصور وملفات PDF فقط.',
+ uploadType:'نوع الملف غير مقبول — الصور وملفات PDF فقط.', waitMsg:'جارٍ التحميل…',
  pwChangedOn:'آخر تغيير: {d}', pwNeverChanged:'لم تُغيَّر بعد',
  pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
  pushTestBtn:'إشعار تجريبي', pushOnWord:'مفعّلة',
@@ -977,7 +1000,7 @@ const EN={
  pwChangeBtn:'Change password', pwTemp:'Signs in with national ID', pwOwn:'Own password',
  pwColumn:'Password', pwResetHint:'To reset: cancel the account, then activate the login again.',
  pwOutBtn:'Sign out', myAccount:'My account', employer:'Employer', employers:'Employers',
- uploadType:'File type not accepted — images and PDF only.',
+ uploadType:'File type not accepted — images and PDF only.', waitMsg:'Loading…',
  pwChangedOn:'Last changed: {d}', pwNeverChanged:'Not changed yet',
  pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
  pushTestBtn:'Test notification', pushOnWord:'On',
@@ -1137,7 +1160,40 @@ try{SESSION=JSON.parse(LS.get('hr_session')||'null')}catch(e){SESSION=null}
 const saveCfg=c=>{CFG=c;LS.set('hr_cfg',JSON.stringify(c))};
 const saveSession=s=>{SESSION=s;s?LS.set('hr_session',JSON.stringify(s)):LS.del('hr_session')};
 
-function busy(on){$('#busy').classList.toggle('on',on)}
+/*  الانشغال يُعَدّ ولا يُبدَّل: عمليتان متوازيتان كانت أولاهما تُطفئ
+    المؤشّر وهو ما زال يعمل. وللطبقة مهلتان — مهلة قبل الظهور كي لا
+    تومض في العمليات السريعة، ومدّة أدنى بعده كي لا ترتجف — ومهلة
+    أمان تفكّ القفل مهما حدث، فلا يحبس المستخدمَ خطأٌ في مكان آخر. */
+let BUSYN=0,BUSY_T=null,BUSY_HIDE=null,BUSY_KILL=null,BUSY_AT=0;
+const BUSY_WAIT=400,BUSY_MIN=500;
+
+function waitOn(){
+ const el=$('#wait');if(!el)return;
+ const im=el.querySelector('img');if(im&&!im.getAttribute('src'))im.src=LOGO;
+ const tx=el.querySelector('.wtxt');if(tx)tx.textContent=t('waitMsg');
+ el.classList.add('on');el.setAttribute('aria-hidden','false');BUSY_AT=Date.now()}
+
+function waitOff(){
+ const el=$('#wait');if(!el)return;
+ el.classList.remove('on');el.setAttribute('aria-hidden','true')}
+
+function busy(on){
+ BUSYN=Math.max(0,BUSYN+(on?1:-1));
+ $('#busy').classList.toggle('on',BUSYN>0);
+ const shown=$('#wait')&&$('#wait').classList.contains('on');
+ if(BUSYN>0){
+  clearTimeout(BUSY_HIDE);BUSY_HIDE=null;
+  if(!BUSY_T&&!shown)BUSY_T=setTimeout(()=>{BUSY_T=null;waitOn()},BUSY_WAIT);
+  clearTimeout(BUSY_KILL);
+  BUSY_KILL=setTimeout(()=>{BUSYN=0;busy(false)},30000);
+ }else{
+  clearTimeout(BUSY_T);BUSY_T=null;
+  clearTimeout(BUSY_KILL);BUSY_KILL=null;
+  if(shown){
+   const left=BUSY_MIN-(Date.now()-BUSY_AT);
+   if(left>0){clearTimeout(BUSY_HIDE);BUSY_HIDE=setTimeout(waitOff,left)}else waitOff();
+  }
+ }}
 function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('on');
  clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('on'),3400)}
 
@@ -1199,10 +1255,13 @@ async function uploadReceipt(file){
  return path}
 
 async function receiptLink(path){
- const r=await fetch(base()+'/storage/v1/object/sign/receipts/'+path,{method:'POST',
-  headers:headers({'Content-Type':'application/json'}),body:JSON.stringify({expiresIn:3600})});
- if(!r.ok)throw new Error(t('receiptFailed'));
- const j=await r.json();return base()+'/storage/v1'+j.signedURL}
+ busy(true);
+ try{
+  const r=await fetch(base()+'/storage/v1/object/sign/receipts/'+path,{method:'POST',
+   headers:headers({'Content-Type':'application/json'}),body:JSON.stringify({expiresIn:3600})});
+  if(!r.ok)throw new Error(t('receiptFailed'));
+  const j=await r.json();return base()+'/storage/v1'+j.signedURL;
+ }finally{busy(false)}}
 
 /* ───────── تحميل البيانات ───────── */
 const TABLES=['org_settings','departments','projects','positions','employers','employees','vehicles',
@@ -1645,9 +1704,15 @@ function saveBlob(name,blob){
  document.body.appendChild(a);a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
 
-function downloadXLSX(name,sheets){
- saveBlob(name,new Blob([buildXlsx(sheets)],
-  {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}))}
+/*  بناء الملف عمل متزامن يحبس الصفحة، فلا يكفي رفع العلامة قبله:
+    نترك المتصفح يرسم إطاراً أولاً ثم نبني، وإلا لم يُرَ شيء.      */
+async function downloadXLSX(name,sheets){
+ busy(true);
+ try{
+  await new Promise(r=>setTimeout(r,BUSY_WAIT+60));
+  saveBlob(name,new Blob([buildXlsx(sheets)],
+   {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+ }finally{busy(false)}}
 
 /* ───────── تصدير البيانات للتحديث ─────────
    الأعمدة بترتيب القالب نفسه حتى يُقرأ الملف عند رفعه.           */
@@ -1667,15 +1732,15 @@ const nameOf2=(list,id)=>{const x=(list||[]).find(y=>y.id===id);return x?x.name:
 const EXP_FILE={emp:['الموظفون','employees'],veh:['المركبات','vehicles'],
  cdoc:['وثائق-الشركة','company-docs']};
 
-function exportKind(kind){
+async function exportKind(kind){
  const rows=EXP_ROWS[kind]();
  if(!rows.length)return toast(t('expEmpty'));
  const nm=EXP_FILE[kind][LANG==='en'?1:0];
- downloadXLSX(nm+'-'+TODAY+'.xlsx',[{name:nm,rows:[tpl(kind),...rows]}]);
+ await downloadXLSX(nm+'-'+TODAY+'.xlsx',[{name:nm,rows:[tpl(kind),...rows]}]);
  toast(t('expDone')+' — '+rows.length)}
 
 /* نسخة احتياطية: كل الجداول في ملف واحد */
-function exportBackup(){
+async function exportBackup(){
  const nm=n=>nameOf2(S.emp,n),dp=n=>nameOf2(S.departments,n);
  const sheets=[
   {name:'الموظفون',rows:[tpl('emp'),...EXP_ROWS.emp()]},
@@ -1702,7 +1767,7 @@ function exportBackup(){
   {name:'الأقسام والمناصب',rows:[['النوع','الاسم','الصلاحية'],
     ...(S.departments||[]).map(d=>['قسم',d.name,'']),
     ...(S.positions||[]).map(p=>['منصب',p.name,p.role||''])]}];
- downloadXLSX('نسخة-احتياطية-'+orgTitle().replace(/[\\\/:*?"<>|]/g,'')+'-'+TODAY+'.xlsx',sheets);
+ await downloadXLSX('نسخة-احتياطية-'+orgTitle().replace(/[\\\/:*?"<>|]/g,'')+'-'+TODAY+'.xlsx',sheets);
  toast(t('bkDone'))}
 
 function downloadCSV(name,head,sample){
@@ -3411,7 +3476,7 @@ const fmtDT=s=>{const d=new Date(s);return isNaN(d)?'—':
  +' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 
 /*  تصدير تقرير الوقود لكل المركبات  */
-function fuelExport(){
+async function fuelExport(){
  const months=fuelMonths();
  if(!months.length)return toast(t('expEmpty'));
  const sheets=[];
@@ -3429,7 +3494,7 @@ function fuelExport(){
   ...all.map(f=>{const v=f.veh?S.veh.find(x=>x.id===f.veh):null;
    return [f.month,v?v.plate:f.plate,f.at?fmtDT(f.at):'',+(+f.ltr).toFixed(2),+(+f.amt).toFixed(2),
     f.station||'',f.driver||'',f.product||'',v?t('yes'):t('fuUnreg')]})]});
- downloadXLSX((LANG==='en'?'fuel-':'استهلاك-الوقود-')+TODAY+'.xlsx',sheets);
+ await downloadXLSX((LANG==='en'?'fuel-':'استهلاك-الوقود-')+TODAY+'.xlsx',sheets);
  toast(t('expDone')+' — '+all.length)}
 
 /*  تقرير الوقود للطباعة — شهرٌ واحد، صفٌّ لكل مركبة  */
@@ -3624,6 +3689,7 @@ async function killLogin(uid){
 
 async function loadAccounts(){
  if(!can('admin'))return;
+ busy(true);
  try{const r=await api.sel('login_accounts');
   ACC=(r||[]).map(a=>({id:a.id,nid:a.nid||'',name:a.employee_name||a.full_name||'',
    role:a.role||'',dept:a.department||'',unlinked:!!a.unlinked,ext:!!a.external_email,
@@ -3631,6 +3697,7 @@ async function loadAccounts(){
    tempPw:a.must_change_pw!==false,pwAt:a.pw_changed_at||''}))
    .sort((x,y)=>(y.unlinked?1:0)-(x.unlinked?1:0)||String(x.nid).localeCompare(String(y.nid)))}
  catch(e){ACC='ERR'}
+ finally{busy(false)}
  if(cur==='users')render()}
 
 function accountsHtml(){
