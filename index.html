@@ -531,7 +531,8 @@ const LS={get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]??null
 let LANG=LS.get('hr_lang')||'ar';
 const AR={
  appSub:'الموارد البشرية والمركبات', brandShort:'الفلك',
- signIn:'تسجيل الدخول', signInLead:'أدخل رقم هويتك أو إقامتك.',
+ signIn:'تسجيل الدخول', signInLead:'أدخل رقم هويتك وكلمة المرور.',
+ pwFirstHint:'أول مرة تدخل؟ كلمة المرور هي رقم هويتك، وسيُطلب منك تغييرها فوراً. وإن نسيتها فراجع مسؤول النظام.',
  nid:'رقم الهوية / الإقامة', nidHint:'١٠ أرقام', enter:'دخول',
  forgot:'نسيت رقمك أو لا يعمل؟ راجع مسؤول النظام ليتحقق من بياناتك.',
  connSettings:'تغيير إعدادات الاتصال', version:'نسخة',
@@ -660,7 +661,7 @@ const AR={
  savedOk:'تم الحفظ', deletedOk:'تم الحذف', addedOk:'تمت الإضافة',
  noPermission:'لا تملك صلاحية لهذه الشاشة', sessionEnded:'انتهت الجلسة، سجّل الدخول من جديد',
  rlsDenied:'صلاحيتك لا تسمح بهذه العملية', connErr:'خطأ في الاتصال',
- noAccount:'لا يوجد حساب بهذه البيانات. راجع مسؤول النظام.',
+ noAccount:'رقم الهوية أو كلمة المرور غير صحيحة. إن نسيتها فراجع مسؤول النظام ليعيد تفعيل حسابك.',
  badUrl:'عنوان المشروع غير صحيح. أضف #setup لآخر الرابط وصحّحه.',
  noNet:'لم يصل الطلب إلى الشبكة. تأكد من اتصالك بالإنترنت.',
  saveFailed:'تعذر الحفظ', currency:'ر.س',
@@ -806,7 +807,8 @@ const AR={
 };
 const EN={
  appSub:'HR & Fleet', brandShort:'AL FALAK',
- signIn:'Sign in', signInLead:'Enter your national ID or iqama number.',
+ signIn:'Sign in', signInLead:'Enter your national ID and password.',
+ pwFirstHint:'First time? Your password is your national ID — you will be asked to change it at once. If you forgot it, ask your administrator.',
  nid:'National ID / Iqama', nidHint:'10 digits', enter:'Sign in',
  forgot:'Number not working? Ask your system administrator to check your record.',
  connSettings:'Connection settings', version:'Version',
@@ -935,7 +937,7 @@ const EN={
  savedOk:'Saved', deletedOk:'Deleted', addedOk:'Added',
  noPermission:'You do not have access to this screen', sessionEnded:'Session expired, please sign in again',
  rlsDenied:'Your role does not allow this action', connErr:'Connection error',
- noAccount:'No account matches those details. Ask your system administrator.',
+ noAccount:'Wrong national ID or password. If you forgot it, ask your administrator to re-activate your account.',
  badUrl:'The project URL is wrong. Add #setup to the link and correct it.',
  noNet:'The request never reached the network. Check your connection.',
  saveFailed:'Could not save', currency:'SAR',
@@ -1106,8 +1108,8 @@ const VTYPES=['بيك أب','فان','شاحنة','سيدان'];
 const VSTAT=['نشطة','في الصيانة','متوقفة'];
 const FKINDS=['وقود','صيانة','مخالفة'];
 const FLEETK={'وقود':'وقود','صيانة مركبة':'صيانة'};
-const ROLE_AR={admin:'مدير النظام',hr:'موارد بشرية',accountant:'محاسب',supervisor:'مدير قسم',employee:'موظف'};
-const ROLE_EN={admin:'System administrator',hr:'HR',accountant:'Accountant',supervisor:'Department manager',employee:'Employee'};
+const ROLE_AR={admin:'مدير النظام',hr:'موارد بشرية',accountant:'محاسب',supervisor:'مدير قسم',employee:'موظف',locked:'بانتظار كلمة المرور'};
+const ROLE_EN={admin:'System administrator',hr:'HR',accountant:'Accountant',supervisor:'Department manager',employee:'Employee',locked:'Awaiting password'};
 const roleName=r=>(LANG==='en'?ROLE_EN:ROLE_AR)[r]||r;
 
 function applyLang(){
@@ -2330,23 +2332,25 @@ function setupScreen(err){
   const f=Object.fromEntries(new FormData(e.target));
   saveCfg({url:normUrl(f.url),key:f.key.trim(),auto:(f.auto||'').trim()});boot()})}
 
-function loginScreen(err){
+function loginScreen(err,keepNid){
  gate(`<div class="gbox">${gateMark()}
   <h2>${t('signIn')}</h2><p class="lead">${t('signInLead')}</p>
   ${err?`<div class="err">${esc(err)}</div>`:''}
   <form id="idFrm">
-   <label>${t('nid')}<input name="nid" type="text" required dir="ltr" inputmode="numeric" pattern="[0-9]{6,}" autocomplete="username" placeholder="${t('nidHint')}"></label>
+   <label>${t('nid')}<input name="nid" type="text" required dir="ltr" inputmode="numeric" pattern="[0-9]{6,}" autocomplete="username" placeholder="${t('nidHint')}" value="${esc(keepNid||'')}"></label>
+   <label>${t('password')}<input name="pw" type="password" required autocomplete="current-password"></label>
    <button class="btn-main" type="submit">${t('enter')}</button>
   </form>
-  <p class="muted" style="font-size:12.5px;text-align:center;margin:16px 0 0">${t('forgot')}</p>
+  <p class="muted" style="font-size:12.5px;text-align:center;margin:14px 0 0">${t('pwFirstHint')}</p>
   ${isStandalone()?'':`<button type="button" class="instl">${t('instBtn')}</button>`}
   ${TECH_MODE?`<div class="gfoot"><button class="lnk" id="reCfg">${t('connSettings')}</button></div>`:''}
   <p class="ver">${t('version')} ${APP_VERSION}</p></div>`);
  if(TECH_MODE)$('#reCfg').addEventListener('click',()=>setupScreen());
  $('#idFrm').addEventListener('submit',async e=>{e.preventDefault();
-  const nid=new FormData(e.target).get('nid').trim();busy(true);
-  try{await doLogin(idEmail(nid),idPass(nid))}
-  catch(ex){loginScreen(loginErrText(ex.message))}
+  const fd=new FormData(e.target);
+  const nid=String(fd.get('nid')||'').trim(), pw=String(fd.get('pw')||'');busy(true);
+  try{await doLogin(idEmail(nid),pw)}
+  catch(ex){loginScreen(loginErrText(ex.message),nid)}
   finally{busy(false)}})}
 
 function emailLoginScreen(err){
@@ -2445,15 +2449,20 @@ async function start(){
 
   /*  قبل أي تحميل: هل هو ملزَم بتغيير كلمته؟ القاعدة تمنعه أصلاً،
       وهذه الشاشة تشرح له لماذا بدل أن يرى نظاماً فارغاً.        */
+  /*  علامتان لا واحدة: my_pw_state، وصلاحية 'locked' التي تردّها
+      القاعدة نفسها. فلو تعذّرت الدالة لأي سبب لا يسقط المستخدم
+      في برنامج فارغ بلا تفسير — وهو ما رأيناه فعلاً.            */
+  let mustPw=(me.role==='locked');
   try{
    const st=await api.rpc('my_pw_state');
    const row=Array.isArray(st)?st[0]:st;
-   if(row&&row.must_change){
-    try{const er=await api.sel('employees','&id=eq.'+me.employee_id);
-        if(er&&er[0])me.nid=er[0].national_id||''}catch(e){}
-    if(!me.nid&&SESSION.user.email)me.nid=String(SESSION.user.email).split('@')[0];
-    return pwGateScreen()}
+   if(row&&row.must_change)mustPw=true;
   }catch(e){}
+  if(mustPw){
+   try{const er=await api.sel('employees','&id=eq.'+me.employee_id);
+       if(er&&er[0])me.nid=er[0].national_id||''}catch(e){}
+   if(!me.nid&&SESSION.user.email)me.nid=String(SESSION.user.email).split('@')[0];
+   return pwGateScreen()}
 
   await load();
   const mine=S.emp.find(e=>e.id===me.employee_id);
