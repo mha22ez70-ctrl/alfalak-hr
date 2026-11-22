@@ -698,7 +698,8 @@ const AR={
  pwSequence:'لا تجعلها أرقاماً متتابعة.',
  pwChangeBtn:'تغيير كلمة المرور', pwTemp:'يدخل برقم الهوية', pwOwn:'كلمة خاصة',
  pwColumn:'كلمة المرور', pwResetHint:'لإعادة تعيينها: ألغِ الحساب ثم فعّل الدخول من جديد.',
- pwOutBtn:'تسجيل الخروج',
+ pwOutBtn:'تسجيل الخروج', myAccount:'حسابي',
+ pwChangedOn:'آخر تغيير: {d}', pwNeverChanged:'لم تُغيَّر بعد',
  pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
  pushTestBtn:'إشعار تجريبي', pushOnWord:'مفعّلة',
  pushStateOn:'هذا الجهاز يستقبل التنبيهات', pushStateOff:'هذا الجهاز لا يستقبل شيئاً',
@@ -974,7 +975,8 @@ const EN={
  pwSequence:'Do not use a run of consecutive digits.',
  pwChangeBtn:'Change password', pwTemp:'Signs in with national ID', pwOwn:'Own password',
  pwColumn:'Password', pwResetHint:'To reset: cancel the account, then activate the login again.',
- pwOutBtn:'Sign out',
+ pwOutBtn:'Sign out', myAccount:'My account',
+ pwChangedOn:'Last changed: {d}', pwNeverChanged:'Not changed yet',
  pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
  pushTestBtn:'Test notification', pushOnWord:'On',
  pushStateOn:'This device receives alerts', pushStateOff:'This device receives nothing',
@@ -2272,7 +2274,9 @@ function openChangePw(){
   const bad=pwProblem(o.a,o.b,(me&&me.nid)||'');
   if(bad){toast(bad);return false}
   await changePassword(o.a);
+  me.pwAt=new Date().toISOString();
   toast(t('pwDone'));
+  if(cur==='home')render();
   return true})}
 
 async function doLogin(email,password){
@@ -2457,6 +2461,7 @@ async function start(){
    const st=await api.rpc('my_pw_state');
    const row=Array.isArray(st)?st[0]:st;
    if(row&&row.must_change)mustPw=true;
+   if(row&&row.changed_at)me.pwAt=row.changed_at;
   }catch(e){}
   if(mustPw){
    try{const er=await api.sel('employees','&id=eq.'+me.employee_id);
@@ -2580,6 +2585,17 @@ function home(){
  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(216px,1fr))">
   ${quick.map(([a,i,l])=>`<button class="card row" data-act="${a}" style="text-align:start;cursor:pointer">
    <span class="av ic">${ico(i)}</span><span class="ttl" style="white-space:nowrap">${esc(l)}</span></button>`).join('')}
+ </div>
+
+ <div class="sechead"><h2>${t('myAccount')}</h2></div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(264px,1fr))">
+  <article class="card">
+   <div class="row"><span class="av ic">${ico('key')}</span>
+    <div style="flex:1;min-width:0"><div class="ttl">${t('pwColumn')}</div>
+     <div class="sub">${me.pwAt?t('pwChangedOn').replace('{d}',fmtD(String(me.pwAt).slice(0,10)))
+                              :t('pwNeverChanged')}</div></div></div>
+   <div class="foot"><button class="btn gold sm" data-act="changePw">${t('edit')}</button></div>
+  </article>
  </div>
 
  <div class="sechead"><h2>${t('docsSoon')}</h2>
