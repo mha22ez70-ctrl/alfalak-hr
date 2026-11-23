@@ -379,6 +379,10 @@ table.cdt td.nm{white-space:normal;min-width:190px;max-width:320px}
 table.cdt td.nm b{display:block}
 table.cdt td small{display:block;color:var(--ink3);font-size:11.5px;font-weight:400;
   margin-top:2px;white-space:normal;line-height:1.5}
+table.cdt.lvt td.nm{max-width:300px}
+table.cdt.lvt td.mono{font-variant-numeric:tabular-nums}
+table.cdt.lvt td small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 table.cdt td.acts2{text-align:end}
 table.cdt td.acts2 .lnk{margin-inline-start:10px}
 table.cdt tfoot td{border-bottom:0;border-top:1px solid var(--line);color:var(--ink2)}
@@ -723,7 +727,9 @@ const AR={
  pwColumn:'كلمة المرور', pwResetHint:'لإعادة تعيينها: ألغِ الحساب ثم فعّل الدخول من جديد.',
  pwOutBtn:'تسجيل الخروج', myAccount:'حسابي', employer:'صاحب العمل', employers:'أصحاب العمل',
  uploadType:'نوع الملف غير مقبول — الصور وملفات PDF فقط.', waitMsg:'جارٍ التحميل…',
- lvRecord:'سجل الإجازات', lvNoneForEmp:'لا إجازات مسجّلة لهذا الموظف.',
+ lvRecord:'سجل الإجازات', lvEntries:'إجازة', lvDaysThisYear:'أيام معتمدة هذه السنة',
+ lvStaffCount:'موظفون لهم إجازات', lvShownDays:'أيام المعروض',
+ lvSearch:'ابحث بالاسم أو النوع أو رقم التأشيرة', lvAllStatus:'كل الحالات', lvAllYears:'كل السنوات', lvNoneForEmp:'لا إجازات مسجّلة لهذا الموظف.',
  lvCount:'عدد الإجازات', lvDaysApproved:'الأيام المعتمدة', lvApprovedByType:'المعتمد هذه السنة:', lvYear:'السنة', lvDaysWord:'الأيام',
  pwChangedOn:'آخر تغيير: {d}', pwNeverChanged:'لم تُغيَّر بعد',
  pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
@@ -1005,7 +1011,9 @@ const EN={
  pwColumn:'Password', pwResetHint:'To reset: cancel the account, then activate the login again.',
  pwOutBtn:'Sign out', myAccount:'My account', employer:'Employer', employers:'Employers',
  uploadType:'File type not accepted — images and PDF only.', waitMsg:'Loading…',
- lvRecord:'Leave record', lvNoneForEmp:'No leave recorded for this employee.',
+ lvRecord:'Leave record', lvEntries:'leaves', lvDaysThisYear:'Approved days this year',
+ lvStaffCount:'People with leave', lvShownDays:'Days shown',
+ lvSearch:'Search by name, type or visa number', lvAllStatus:'All statuses', lvAllYears:'All years', lvNoneForEmp:'No leave recorded for this employee.',
  lvCount:'Requests', lvDaysApproved:'Approved days', lvApprovedByType:'Approved this year:', lvYear:'Year', lvDaysWord:'Days',
  pwChangedOn:'Last changed: {d}', pwNeverChanged:'Not changed yet',
  pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
@@ -1133,6 +1141,11 @@ const ev=v=>LANG==='en'?(EV_EN[v]||v):v;
 
 const LOC=()=>LANG==='en'?'en-GB':'ar';
 const fmtD=s=>s?new Intl.DateTimeFormat(LOC(),{day:'numeric',month:'short',year:'numeric',numberingSystem:'latn'}).format(pd(s)):'—';
+/*  في جدولٍ من مئات الصفوف، التاريخ المكتوب بالحروف يأكل ١٣٥ بكسل
+    ولا يصطفّ. فالمختصر هنا ليس تقشّفاً بل قراءةً أسرع.          */
+const fmtDS=s=>{if(!s)return '—';const d=pd(s);if(!d||isNaN(d))return '—';
+ return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')
+   +'-'+String(d.getUTCDate()).padStart(2,'0')};
 const monthName=()=>new Intl.DateTimeFormat(LOC(),{month:'long',year:'numeric',numberingSystem:'latn'}).format(today);
 const money=n=>Math.round(n).toLocaleString('en-US')+' '+t('currency');
 const num=n=>Number(n||0).toLocaleString('en-US');
@@ -3403,27 +3416,70 @@ function renewals(){
 
 /* ---------- الإجازات ---------- */
 const dur=l=>Math.round((pd(l.to)-pd(l.from))/864e5)+1;
+const LF={q:'',st:'',y:''};
+
 function leaveV(){
+ const all=S.leave||[];
+ const years=[...new Set(all.map(l=>String(l.from||'').slice(0,4)).filter(Boolean))]
+   .sort((a,b)=>b.localeCompare(a));
  const ord={'معلقة':0,'معتمدة':1,'مرفوضة':2};
- const L=[...S.leave].sort((a,b)=>ord[a.status]-ord[b.status]||String(a.from).localeCompare(String(b.from)));
- const pend=S.leave.filter(l=>l.status==='معلقة').length;
+ const rows=all
+  .filter(l=>!LF.st||l.status===LF.st)
+  .filter(l=>!LF.y||String(l.from||'').slice(0,4)===LF.y)
+  .filter(l=>{if(!LF.q)return true;const q=nrm(LF.q);
+   return nrm(empName(l.emp)).includes(q)||nrm(l.note).includes(q)
+       ||nrm(l.type).includes(q)||String(l.from||'').includes(LF.q.trim())})
+  .sort((a,b)=>ord[a.status]-ord[b.status]||String(b.from).localeCompare(String(a.from)));
+
+ const pend=all.filter(l=>l.status==='معلقة').length;
+ const thisY=String(TODAY).slice(0,4);
+ const yDays=all.filter(l=>l.status==='معتمدة'&&String(l.from||'').slice(0,4)===thisY)
+   .reduce((a,l)=>a+dur(l),0);
+ const shown=rows.reduce((a,l)=>a+dur(l),0);
+ const who=new Set(all.map(l=>l.emp)).size;
+ const NC=can('approve')||can('manage')?6:5;
+
  return`<div class="pagehead"><div><h1>${can('approve')?t('leaves'):t('myLeaves')}</h1>
-   <p>${num(pend)} ${t('pendingApproval')}</p></div>
+   <p>${num(all.length)} ${t('lvEntries')}</p></div>
   <div class="acts">${can('manage')?`<button class="btn" data-act="expLeave">${t('expBtn')}</button>
     <button class="btn" data-act="impLeave">${t('impBtn')}</button>`:''}
    <button class="btn gold" data-act="addLeave">${t('newRequest')}</button></div></div>
- <div class="grid g-auto">${L.length?L.map(l=>`<article class="card">
-   <div class="row"><span class="av">${esc(ini(empName(l.emp)))}</span>
-    <div style="flex:1;min-width:0"><div class="ttl">${esc(empName(l.emp))}</div>
-     <div class="sub">${esc(ev(l.type))} ${t('leaveWord')}</div></div>
-    <span class="tag ${l.status==='معتمدة'?'ok':l.status==='مرفوضة'?'bad':'warn'}">${esc(ev(l.status))}</span></div>
-   ${kv([[t('from'),fmtD(l.from)],[t('to'),fmtD(l.to)],[t('lvDaysWord'),num(dur(l))]])}
-   ${l.note?`<p class="note">${esc(l.note)}</p>`:''}
-   <div class="foot">
-    ${l.status==='معلقة'&&can('approve')?`<button class="btn gold sm" data-act="approve" data-id="${l.id}">${t('approve')}</button>
-      <button class="btn sm" data-act="reject" data-id="${l.id}">${t('reject')}</button>`:''}
-    <button class="lnk danger" data-act="delLeave" data-id="${l.id}">${t('del')}</button></div>
-  </article>`).join(''):`<p class="empty">${t('noLeaves')}</p>`}</div>`}
+ <div class="kpis">
+  <div class="kpi${pend?' warn':''}"><div class="lab">${t('pendingApproval')}</div>
+   <div class="num">${num(pend)}</div><div class="sub">${t('lvEntries')}</div></div>
+  <div class="kpi"><div class="lab">${t('lvDaysThisYear')}</div>
+   <div class="num">${num(yDays)}</div><div class="sub">${esc(thisY)}</div></div>
+  <div class="kpi"><div class="lab">${t('lvStaffCount')}</div>
+   <div class="num">${num(who)}</div><div class="sub">${t('employees')}</div></div>
+  <div class="kpi"><div class="lab">${t('lvShownDays')}</div>
+   <div class="num">${num(shown)}</div><div class="sub">${num(rows.length)} ${t('lvEntries')}</div></div>
+ </div>
+ <div class="bar">
+  <span class="field"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ink3)" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+   <input id="lvq" type="search" placeholder="${t('lvSearch')}" value="${esc(LF.q)}" aria-label="${t('lvSearch')}"></span>
+  <span class="field" style="flex:0 1 150px"><select id="lvst" aria-label="${t('status')}">
+   <option value="">${t('lvAllStatus')}</option>
+   ${['معلقة','معتمدة','مرفوضة'].map(x=>`<option value="${esc(x)}" ${LF.st===x?'selected':''}>${esc(ev(x))}</option>`).join('')}</select></span>
+  <span class="field" style="flex:0 1 130px"><select id="lvy" aria-label="${t('lvYear')}">
+   <option value="">${t('lvAllYears')}</option>
+   ${years.map(y=>`<option value="${esc(y)}" ${LF.y===y?'selected':''}>${esc(y)}</option>`).join('')}</select></span>
+ </div>
+ <div class="tbl"><table class="cdt lvt"><thead><tr>
+   <th>${t('employee')}</th><th>${t('from')}</th><th>${t('to')}</th>
+   <th>${t('lvDaysWord')}</th><th>${t('status')}</th>
+   ${NC===6?`<th></th>`:''}</tr></thead>
+  <tbody>${rows.length?rows.map(l=>`<tr class="${l.status==='معلقة'?'warnrow':''}">
+    <td class="nm"><b dir="auto">${esc(empName(l.emp))}</b>
+     <small dir="auto" title="${esc(l.note)}">${esc(ev(l.type))}${l.note?' · '+esc(l.note):''}</small></td>
+    <td class="mono">${fmtDS(l.from)}</td>
+    <td class="mono">${fmtDS(l.to)}</td>
+    <td><b>${num(dur(l))}</b></td>
+    <td><span class="tag ${l.status==='معتمدة'?'ok':l.status==='مرفوضة'?'bad':'warn'}">${esc(ev(l.status))}</span></td>
+    ${NC===6?`<td class="acts2">
+      ${l.status==='معلقة'&&can('approve')?`<button class="btn gold sm" data-act="approve" data-id="${l.id}">${t('approve')}</button>
+        <button class="btn sm" data-act="reject" data-id="${l.id}">${t('reject')}</button>`:''}
+      <button class="lnk danger" data-act="delLeave" data-id="${l.id}">${t('del')}</button></td>`:''}
+   </tr>`).join(''):`<tr><td colspan="${NC}" class="empty">${all.length?t('noMatch'):t('noLeaves')}</td></tr>`}</tbody></table></div>`}
 
 /* ---------- العُهد ---------- */
 function custodyV(){
@@ -3999,6 +4055,10 @@ $('#view').addEventListener('input',e=>{
  if(e.target.id==='msd'){MS.dept=e.target.value;render();return}
  if(e.target.id==='vq'||e.target.id==='vst'){
   VF.q=$('#vq').value;VF.st=$('#vst').value;render();
+  const el=$('#'+e.target.id);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}}
+  return}
+ if(e.target.id==='lvq'||e.target.id==='lvst'||e.target.id==='lvy'){
+  LF.q=$('#lvq').value;LF.st=$('#lvst').value;LF.y=$('#lvy').value;render();
   const el=$('#'+e.target.id);if(el){el.focus();try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}}
   return}
  if(e.target.id==='cdq'||e.target.id==='cdc'){
