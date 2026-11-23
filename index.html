@@ -379,10 +379,33 @@ table.cdt td.nm{white-space:normal;min-width:190px;max-width:320px}
 table.cdt td.nm b{display:block}
 table.cdt td small{display:block;color:var(--ink3);font-size:11.5px;font-weight:400;
   margin-top:2px;white-space:normal;line-height:1.5}
-table.cdt.lvt td.nm{max-width:300px}
+table.cdt.lvt td.nm{max-width:260px}
+table.cdt.lvt th,table.cdt.lvt td{padding-inline:8px}
+table.cdt.lvt td.per{white-space:nowrap}
+table.cdt.lvt td.per .ar{color:var(--ink3);padding:0 3px}
 table.cdt.lvt td.mono{font-variant-numeric:tabular-nums}
 table.cdt.lvt td small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+table.cdt tr.rowgo{cursor:pointer}
+table.cdt tr.rowgo:hover{background:var(--sunk)}
+table.cdt tr.rowgo .acts2 *{cursor:auto}
+table.cdt td.clips{white-space:nowrap}
+.clip{display:inline-block;font-size:11px;padding:2px 7px;border-radius:5px;
+  background:var(--goldsoft);color:var(--gold);margin-inline-end:4px}
+.trail{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.trow{display:flex;align-items:baseline;gap:10px;padding:8px 11px;border:1px solid var(--line);
+  border-radius:9px;background:var(--sunk);font-size:13.5px}
+.trow.ok{border-color:color-mix(in srgb,var(--ok) 36%,transparent)}
+.trow.bad{border-color:color-mix(in srgb,var(--bad) 36%,transparent)}
+.trow .tlab{flex:0 0 118px;color:var(--ink3);font-size:12.5px}
+.trow .twho{flex:1;min-width:0;font-weight:600}
+.trow .tat{color:var(--ink3);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.frow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 11px;
+  border:1px solid var(--line);border-radius:9px;margin-top:7px;font-size:13.5px}
+.frow .flab{flex:1 1 160px;min-width:0;font-weight:600}
+h4.sechead2{margin:18px 0 8px;font-size:13px;color:var(--ink3);font-weight:600;
+  letter-spacing:.02em}
+@media (max-width:520px){.trow .tlab{flex-basis:92px}}
 table.cdt td.acts2{text-align:end}
 table.cdt td.acts2 .lnk{margin-inline-start:10px}
 table.cdt tfoot td{border-bottom:0;border-top:1px solid var(--line);color:var(--ink2)}
@@ -729,7 +752,22 @@ const AR={
  uploadType:'نوع الملف غير مقبول — الصور وملفات PDF فقط.', waitMsg:'جارٍ التحميل…',
  lvRecord:'سجل الإجازات', lvEntries:'إجازة', lvDaysThisYear:'أيام معتمدة هذه السنة',
  lvStaffCount:'موظفون لهم إجازات', lvShownDays:'أيام المعروض',
- lvSearch:'ابحث بالاسم أو النوع أو رقم التأشيرة', lvAllStatus:'كل الحالات', lvAllYears:'كل السنوات', lvNoneForEmp:'لا إجازات مسجّلة لهذا الموظف.',
+ lvSearch:'ابحث بالاسم أو النوع أو رقم التأشيرة', lvAllStatus:'كل الحالات', lvAllYears:'كل السنوات',
+ lvWaitSup:'عند مدير القسم', lvWaitMgr:'عند المدير العام', lvPeriod:'الفترة',
+ details:'تفاصيل', lvReset:'إعادة إلى الانتظار',
+ lvApproved:'معتمدة', lvRejected:'مرفوضة', lvWaitSupShort:'عند مدير القسم',
+ lvTrail:'من اعتمدها', lvBySup:'مدير القسم', lvByMgr:'المدير العام', lvByRej:'رفضها',
+ lvNotYet:'لم تمرّ عليه بعد', lvDetails:'تفاصيل الإجازة',
+ lvFiles:'المرفقات', lvFilesShort:'مرفقات', lvNoFile:'لا مرفق',
+ lvVisaFile:'تأشيرة الخروج والعودة', lvTicketFile:'التذكرة',
+ lvVisaShort:'تأشيرة', lvTicketShort:'تذكرة',
+ lvRejWhy:'سبب الرفض (اختياري)', lvSentToMgr:'اعتُمدت — أُحيلت إلى المدير العام',
+ lvApprovedOk:'اعتُمدت نهائياً', lvResetAsk:'إعادة الطلب معلّقاً ومحو الاعتمادات؟',
+ lvErr_self:'لا تعتمد إجازتك بنفسك.', lvErr_not_my_dept:'هذا الموظف ليس من قسمك.',
+ lvErr_already_sup:'اعتمدها مدير القسم من قبل.', lvErr_already_mgr:'اعتُمدت نهائياً من قبل.',
+ lvErr_already_rejected:'الطلب مرفوض — أعِده معلّقاً أولاً.',
+ lvErr_not_allowed:'لا صلاحية لك على هذا الطلب.', lvErr_not_found:'الطلب غير موجود.',
+ attach:'إرفاق', replace:'استبدال', lvNoneForEmp:'لا إجازات مسجّلة لهذا الموظف.',
  lvCount:'عدد الإجازات', lvDaysApproved:'الأيام المعتمدة', lvApprovedByType:'المعتمد هذه السنة:', lvYear:'السنة', lvDaysWord:'الأيام',
  pwChangedOn:'آخر تغيير: {d}', pwNeverChanged:'لم تُغيَّر بعد',
  pushTitle:'إشعارات الجوال', pushOnBtn:'تفعيل الإشعارات', pushOffBtn:'إيقافها',
@@ -1013,7 +1051,22 @@ const EN={
  uploadType:'File type not accepted — images and PDF only.', waitMsg:'Loading…',
  lvRecord:'Leave record', lvEntries:'leaves', lvDaysThisYear:'Approved days this year',
  lvStaffCount:'People with leave', lvShownDays:'Days shown',
- lvSearch:'Search by name, type or visa number', lvAllStatus:'All statuses', lvAllYears:'All years', lvNoneForEmp:'No leave recorded for this employee.',
+ lvSearch:'Search by name, type or visa number', lvAllStatus:'All statuses', lvAllYears:'All years',
+ lvWaitSup:'With manager', lvWaitMgr:'With GM', lvPeriod:'Period',
+ details:'Details', lvReset:'Reset to pending',
+ lvApproved:'Approved', lvRejected:'Rejected', lvWaitSupShort:'with manager',
+ lvTrail:'Approval trail', lvBySup:'Department manager', lvByMgr:'General manager', lvByRej:'Rejected by',
+ lvNotYet:'Not yet', lvDetails:'Leave details',
+ lvFiles:'Attachments', lvFilesShort:'Files', lvNoFile:'None',
+ lvVisaFile:'Exit/re-entry visa', lvTicketFile:'Ticket',
+ lvVisaShort:'Visa', lvTicketShort:'Ticket',
+ lvRejWhy:'Reason (optional)', lvSentToMgr:'Approved — sent to the GM',
+ lvApprovedOk:'Fully approved', lvResetAsk:'Reset to pending and clear approvals?',
+ lvErr_self:'You cannot approve your own leave.', lvErr_not_my_dept:'Not in your department.',
+ lvErr_already_sup:'Already approved by the manager.', lvErr_already_mgr:'Already fully approved.',
+ lvErr_already_rejected:'Rejected — reset it to pending first.',
+ lvErr_not_allowed:'You are not allowed on this request.', lvErr_not_found:'Request not found.',
+ attach:'Attach', replace:'Replace', lvNoneForEmp:'No leave recorded for this employee.',
  lvCount:'Requests', lvDaysApproved:'Approved days', lvApprovedByType:'Approved this year:', lvYear:'Year', lvDaysWord:'Days',
  pwChangedOn:'Last changed: {d}', pwNeverChanged:'Not changed yet',
  pushTitle:'Phone notifications', pushOnBtn:'Enable notifications', pushOffBtn:'Turn off',
@@ -1143,9 +1196,11 @@ const LOC=()=>LANG==='en'?'en-GB':'ar';
 const fmtD=s=>s?new Intl.DateTimeFormat(LOC(),{day:'numeric',month:'short',year:'numeric',numberingSystem:'latn'}).format(pd(s)):'—';
 /*  في جدولٍ من مئات الصفوف، التاريخ المكتوب بالحروف يأكل ١٣٥ بكسل
     ولا يصطفّ. فالمختصر هنا ليس تقشّفاً بل قراءةً أسرع.          */
-const fmtDS=s=>{if(!s)return '—';const d=pd(s);if(!d||isNaN(d))return '—';
- return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')
-   +'-'+String(d.getUTCDate()).padStart(2,'0')};
+/*  لا نحوّله إلى Date أصلاً: pd() تُنشئ منتصف ليلٍ محلّي، وقراءته
+    بتوقيت UTC تُرجِع اليوم السابق في الرياض. والنصّ أصلاً
+    YYYY-MM-DD فيُعاد تشكيله بلا تواريخ ولا مناطق زمنية.        */
+const fmtDS=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s||''));
+ return m?m[1]+'-'+m[2]+'-'+m[3]:(s?fmtD(s):'—')};
 const monthName=()=>new Intl.DateTimeFormat(LOC(),{month:'long',year:'numeric',numberingSystem:'latn'}).format(today);
 const money=n=>Math.round(n).toLocaleString('en-US')+' '+t('currency');
 const num=n=>Number(n||0).toLocaleString('en-US');
@@ -1308,7 +1363,11 @@ async function load(){
   veh:out.vehicles.map(v=>({id:v.id,plate:v.plate,model:v.model,year:v.year||'',type:v.type||'',driver:v.driver_id||'',
     km:+v.km||0,dept_id:v.department_id||'',istimara:v.istimara_expiry||'',insurance:v.insurance_expiry||'',
     inspect:v.inspection_expiry||'',status:v.status||'نشطة'})),
-  leave:out.leaves.map(l=>({id:l.id,emp:l.employee_id,type:l.type,from:l.from_date,to:l.to_date,status:l.status,note:l.note||''})),
+  leave:out.leaves.map(l=>({id:l.id,emp:l.employee_id,type:l.type,from:l.from_date,to:l.to_date,
+    status:l.status,note:l.note||'',
+    supName:l.sup_name||'',supAt:l.sup_at||'',mgrName:l.mgr_name||'',mgrAt:l.mgr_at||'',
+    rejName:l.rej_name||'',rejAt:l.rej_at||'',rejWhy:l.rej_reason||'',
+    visa:l.visa_path||'',ticket:l.ticket_path||''})),
   rep:out.daily_reports.map(r=>({id:r.id,date:r.date,project:nameOf(out.projects,r.project_id),project_id:r.project_id||'',
     emp:r.employee_id,hours:+r.hours||0,task:r.task||''})),
   custody:out.custody.map(c=>({id:c.id,emp:c.employee_id,amount:+c.amount||0,date:c.date,note:c.note||'',status:c.status,settled:c.settled_date||''})),
@@ -3418,6 +3477,72 @@ function renewals(){
 const dur=l=>Math.round((pd(l.to)-pd(l.from))/864e5)+1;
 const LF={q:'',st:'',y:''};
 
+/*  «معلّقة» وحدها لا تقول أين وقف الطلب. هذه تُسمّي المرحلة.  */
+const lvStage=l=>l.status==='مرفوضة'?'rej'
+  :l.status==='معتمدة'?'done'
+  :l.supAt?'wmgr':'wsup';
+const LV_TAG={rej:'bad',done:'ok',wmgr:'warn',wsup:'warn'};
+const lvStageTxt=l=>({rej:t('lvRejected'),done:t('lvApproved'),
+  wmgr:t('lvWaitMgr'),wsup:t('lvWaitSup')})[lvStage(l)];
+
+/*  من اعتمد ومتى — سطران ثابتان حتى لو كانا فارغين، كي يُرى
+    الفراغ نفسه: طلبٌ لم يمرّ على مدير القسم يجب أن يظهر ذلك.  */
+function lvTrailHtml(l){
+ const line=(lab,who,at,cls)=>`<div class="trow ${cls||''}">
+   <span class="tlab">${lab}</span>
+   <span class="twho">${who?esc(who):`<span class="muted">${t('lvNotYet')}</span>`}</span>
+   <span class="tat">${at?fmtDT(at):''}</span></div>`;
+ return`<div class="trail">
+  ${line(t('lvBySup'),l.supName,l.supAt,l.supAt?'ok':'')}
+  ${line(t('lvByMgr'),l.mgrName,l.mgrAt,l.mgrAt?'ok':'')}
+  ${l.rejName||l.status==='مرفوضة'?line(t('lvByRej'),l.rejName,l.rejAt,'bad'):''}
+  ${l.rejWhy?`<p class="note bad" style="margin:8px 0 0">${esc(l.rejWhy)}</p>`:''}
+ </div>`}
+
+/*  مرفقان معلومان: تأشيرة الخروج والعودة، والتذكرة.  */
+function lvFileRow(l,key,lab){
+ const path=key==='visa'?l.visa:l.ticket;
+ return`<div class="frow"><span class="flab">${lab}</span>
+  ${path?`<button class="lnk" data-act="viewRcp" data-path="${esc(path)}">${t('openFile')}</button>
+    ${can('approve')||l.emp===me.employee_id?`<button class="lnk danger" data-act="lvFileDel"
+      data-id="${l.id}" data-k="${key}">${t('del')}</button>`:''}`
+   :`<span class="muted">${t('lvNoFile')}</span>`}
+  <button class="btn sm" data-act="lvFileAdd" data-id="${l.id}" data-k="${key}">${
+    path?t('replace'):t('attach')}</button></div>`}
+
+function lvDetailHtml(l){
+ return`${kv([[t('employee'),esc(empName(l.emp))],
+   [t('leaveType'),esc(ev(l.type))],
+   [t('from'),fmtD(l.from)],[t('to'),fmtD(l.to)],
+   [t('lvDaysWord'),num(dur(l))],
+   [t('status'),`<span class="tag ${LV_TAG[lvStage(l)]}">${lvStageTxt(l)}</span>`]])}
+  ${l.note?`<p class="note" style="margin-top:10px">${esc(l.note)}</p>`:''}
+  <h4 class="sechead2">${t('lvTrail')}</h4>
+  ${lvTrailHtml(l)}
+  <h4 class="sechead2">${t('lvFiles')}</h4>
+  ${lvFileRow(l,'visa',t('lvVisaFile'))}
+  ${lvFileRow(l,'ticket',t('lvTicketFile'))}
+  ${can('approve')||can('manage')?`<div class="foot" style="margin-top:16px">
+    ${lvStage(l)!=='done'&&lvStage(l)!=='rej'&&can('approve')?`
+      <button class="btn gold sm" data-act="approve" data-id="${l.id}">${t('approve')}</button>
+      <button class="btn sm" data-act="reject" data-id="${l.id}">${t('reject')}</button>`:''}
+    ${can('manage')&&(l.supAt||l.mgrAt||l.rejAt)?`<button class="lnk" data-act="lvReset" data-id="${l.id}">${t('lvReset')}</button>`:''}
+    ${can('manage')?`<button class="lnk danger" data-act="delLeave" data-id="${l.id}">${t('del')}</button>`:''}
+   </div>`:''}`}
+
+let LVOPEN='';
+function openLeave(lid){
+ const l=(S.leave||[]).find(x=>x.id===lid);if(!l)return;
+ LVOPEN=lid;
+ $('#dlgTitle').textContent=t('lvDetails')+' — '+empName(l.emp);
+ $('#dlgSave').hidden=true;onSave=null;
+ $('#dlg').classList.add('wideDlg');
+ $('#fields').innerHTML=lvDetailHtml(l);
+ if(!$('#dlg').open)$('#dlg').showModal()}
+function paintLeaveDlg(){
+ const l=(S.leave||[]).find(x=>x.id===LVOPEN);
+ if(l&&$('#dlg').open)$('#fields').innerHTML=lvDetailHtml(l)}
+
 function leaveV(){
  const all=S.leave||[];
  const years=[...new Set(all.map(l=>String(l.from||'').slice(0,4)).filter(Boolean))]
@@ -3432,6 +3557,7 @@ function leaveV(){
   .sort((a,b)=>ord[a.status]-ord[b.status]||String(b.from).localeCompare(String(a.from)));
 
  const pend=all.filter(l=>l.status==='معلقة').length;
+ const wsup=all.filter(l=>lvStage(l)==='wsup').length;
  const thisY=String(TODAY).slice(0,4);
  const yDays=all.filter(l=>l.status==='معتمدة'&&String(l.from||'').slice(0,4)===thisY)
    .reduce((a,l)=>a+dur(l),0);
@@ -3446,7 +3572,7 @@ function leaveV(){
    <button class="btn gold" data-act="addLeave">${t('newRequest')}</button></div></div>
  <div class="kpis">
   <div class="kpi${pend?' warn':''}"><div class="lab">${t('pendingApproval')}</div>
-   <div class="num">${num(pend)}</div><div class="sub">${t('lvEntries')}</div></div>
+   <div class="num">${num(pend)}</div><div class="sub">${num(wsup)} ${t('lvWaitSupShort')}</div></div>
   <div class="kpi"><div class="lab">${t('lvDaysThisYear')}</div>
    <div class="num">${num(yDays)}</div><div class="sub">${esc(thisY)}</div></div>
   <div class="kpi"><div class="lab">${t('lvStaffCount')}</div>
@@ -3465,21 +3591,25 @@ function leaveV(){
    ${years.map(y=>`<option value="${esc(y)}" ${LF.y===y?'selected':''}>${esc(y)}</option>`).join('')}</select></span>
  </div>
  <div class="tbl"><table class="cdt lvt"><thead><tr>
-   <th>${t('employee')}</th><th>${t('from')}</th><th>${t('to')}</th>
-   <th>${t('lvDaysWord')}</th><th>${t('status')}</th>
+   <th>${t('employee')}</th><th>${t('lvPeriod')}</th>
+   <th>${t('lvDaysWord')}</th><th>${t('status')}</th><th>${t('lvFilesShort')}</th>
    ${NC===6?`<th></th>`:''}</tr></thead>
-  <tbody>${rows.length?rows.map(l=>`<tr class="${l.status==='معلقة'?'warnrow':''}">
+  <tbody>${rows.length?rows.map(l=>{
+   const sg=lvStage(l);
+   return`<tr class="${sg==='rej'?'':sg==='done'?'':'warnrow'} rowgo" data-act="lvOpen" data-id="${l.id}" tabindex="0">
     <td class="nm"><b dir="auto">${esc(empName(l.emp))}</b>
      <small dir="auto" title="${esc(l.note)}">${esc(ev(l.type))}${l.note?' · '+esc(l.note):''}</small></td>
-    <td class="mono">${fmtDS(l.from)}</td>
-    <td class="mono">${fmtDS(l.to)}</td>
+    <td class="mono per" dir="ltr">${fmtDS(l.from)} <span class="ar">→</span> ${fmtDS(l.to)}</td>
     <td><b>${num(dur(l))}</b></td>
-    <td><span class="tag ${l.status==='معتمدة'?'ok':l.status==='مرفوضة'?'bad':'warn'}">${esc(ev(l.status))}</span></td>
+    <td><span class="tag ${LV_TAG[sg]}">${lvStageTxt(l)}</span></td>
+    <td class="clips">${l.visa?`<span class="clip" title="${t('lvVisaFile')}">${t('lvVisaShort')}</span>`:''}${
+      l.ticket?`<span class="clip" title="${t('lvTicketFile')}">${t('lvTicketShort')}</span>`:''}${
+      !l.visa&&!l.ticket?'<span class="muted">—</span>':''}</td>
     ${NC===6?`<td class="acts2">
-      ${l.status==='معلقة'&&can('approve')?`<button class="btn gold sm" data-act="approve" data-id="${l.id}">${t('approve')}</button>
-        <button class="btn sm" data-act="reject" data-id="${l.id}">${t('reject')}</button>`:''}
-      <button class="lnk danger" data-act="delLeave" data-id="${l.id}">${t('del')}</button></td>`:''}
-   </tr>`).join(''):`<tr><td colspan="${NC}" class="empty">${all.length?t('noMatch'):t('noLeaves')}</td></tr>`}</tbody></table></div>`}
+      ${l.status!=='مرفوضة'&&l.status!=='معتمدة'&&can('approve')?`<button class="btn gold sm" data-act="approve" data-id="${l.id}">${t('approve')}</button>
+        <button class="btn sm" data-act="reject" data-id="${l.id}">${t('reject')}</button>`
+       :`<button class="lnk" data-act="lvOpen" data-id="${l.id}">${t('details')}</button>`}</td>`:''}
+   </tr>`}).join(''):`<tr><td colspan="${NC}" class="empty">${all.length?t('noMatch'):t('noLeaves')}</td></tr>`}</tbody></table></div>`}
 
 /* ---------- العُهد ---------- */
 function custodyV(){
@@ -4198,10 +4328,43 @@ document.addEventListener('click',async e=>{
     if(o.to_date<o.from_date){toast(t('endBeforeStart'));return false}
     await api.ins('leaves',{employee_id:o.employee_id,type:o.type,from_date:o.from_date,to_date:o.to_date,note:o.note||null});
     toast(t('requestSent'))})},
-  approve:async()=>{try{await api.upd('leaves',id,{status:'معتمدة',decided_by:me.id,decided_at:new Date().toISOString()});
-   await refreshAll();toast(t('savedOk'))}catch(ex){toast(ex.message)}},
-  reject:async()=>{try{await api.upd('leaves',id,{status:'مرفوضة',decided_by:me.id,decided_at:new Date().toISOString()});
-   await refreshAll();toast(t('savedOk'))}catch(ex){toast(ex.message)}},
+  /*  لا نكتب الحالة ولا اسم المعتمِد: القاعدة تكتبهما من هوية
+      المتصل ووقتها هي. والشاشة تعرض ما تردّه فقط.            */
+  lvOpen:()=>openLeave(id),
+  approve:async()=>{try{busy(true);
+   const r=await api.rpc('leave_approve',{p_leave:id});
+   const c=Array.isArray(r)?r[0]:r;
+   if(c==='sup_ok'||c==='mgr_ok'){await refreshAll();paintLeaveDlg();
+     toast(c==='sup_ok'?t('lvSentToMgr'):t('lvApprovedOk'))}
+   else toast(t('lvErr_'+c)||t('noPermission'));
+  }catch(ex){toast(ex.message)}finally{busy(false)}},
+  reject:async()=>{
+   openForm(t('reject'),[{k:'why',l:t('lvRejWhy')}],{},async o=>{
+    const r=await api.rpc('leave_reject',{p_leave:id,p_reason:o.why||null});
+    const c=Array.isArray(r)?r[0]:r;
+    if(c!=='ok'){toast(t('lvErr_'+c)||t('noPermission'));return false}
+    await refreshAll();paintLeaveDlg();toast(t('savedOk'))})},
+  lvReset:async()=>{if(!can('manage'))return toast(t('noPermission'));
+   if(!ask(t('lvResetAsk')))return;
+   try{busy(true);const r=await api.rpc('leave_reset',{p_leave:id});
+    const c=Array.isArray(r)?r[0]:r;
+    if(c!=='ok')return toast(t('noPermission'));
+    await refreshAll();paintLeaveDlg();toast(t('savedOk'))}
+   catch(ex){toast(ex.message)}finally{busy(false)}},
+  lvFileAdd:()=>{const k=b.dataset.k;
+   const l=(S.leave||[]).find(x=>x.id===id);if(!l)return;
+   openForm((k==='visa'?t('lvVisaFile'):t('lvTicketFile'))+' — '+empName(l.emp),
+    [{k:'file',l:t('filePick'),t:'file',wide:1}],{},async o=>{
+     if(!o.file||!o.file.size){toast(t('filePick'));return false}
+     const path=await uploadReceipt(o.file);
+     await api.upd('leaves',id,k==='visa'?{visa_path:path}:{ticket_path:path});
+     await refreshAll();paintLeaveDlg();toast(t('fileAdded'))})},
+  lvFileDel:async()=>{const k=b.dataset.k;
+   if(!ask(t('confirmDelItem')))return;
+   try{busy(true);
+    await api.upd('leaves',id,k==='visa'?{visa_path:null}:{ticket_path:null});
+    await refreshAll();paintLeaveDlg();toast(t('deletedOk'))}
+   catch(ex){toast(ex.message)}finally{busy(false)}},
   delLeave:async()=>{if(!ask(t('confirmDelLeave')))return;
    try{await api.del('leaves',id);await refreshAll();toast(t('deletedOk'))}catch(ex){toast(ex.message)}},
 
